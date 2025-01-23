@@ -122,3 +122,87 @@ public static int[][] generateMatrix(int n) {
 
 # 链表
 
+## [203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/)
+
+### 利用prev
+
+题目一眼看上去很简单（实际上也确实），不过由于有段时间没接触算法，很多知识都忘完了——这题只要想起来几个关键词，就能做出：
+
+**单链表**，外加一点“经验”，该结构遍历时有一定“局限性”，比如无法知道上一个节点信息。可以加入prev、next（有些题会用到）来进行补足，方便解题，本题只要加入了prev指针，就很简单能解出来了。
+
+图解：
+
+<img src="./imgs/image-20250123185842861.png" alt="image-20250123185842861" style="zoom:80%;" />
+
+<img src="./imgs/image-20250123185902223.png" alt="image-20250123185902223" style="zoom:80%;" />
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+       while (head != null && head.val == val) {
+            head = head.next;
+        }
+
+        ListNode prev = head;//涉及单链表的删除操作——记住加入prev节点！
+        if(head == null) return null;//特殊：可能已经把所有节点删除完
+        ListNode p = head.next;
+        while (p != null) {
+            if(p.val == val) {
+                prev.next = p.next;//删除节点p
+            }
+            else{
+                prev = p;//若不删除，更新prev
+            }
+            p=p.next;
+        }
+        return head;
+    }
+}
+```
+
+### 不利用prev
+
+- 也是可以做的，稍微注意一下条件判断，避免出现`NullPointerException`报错
+
+![image-20250123191033243](./imgs/image-20250123191033243.png)
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+       while (head != null && head.val == val) {
+            head = head.next;
+        }
+
+        ListNode cur = head;
+        while (cur != null) {
+            while(cur.next != null && cur.next.val == val) {
+                cur.next = cur.next.next;
+            }
+            cur = cur.next;
+           
+        }
+        return head;
+    }
+}
+```
+
