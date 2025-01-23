@@ -206,3 +206,105 @@ class Solution {
 }
 ```
 
+## [707. 设计链表](https://leetcode.cn/problems/design-linked-list/)
+
+考虑情况：
+
+1. MyLinkedList的head为空
+2. index小于0、index大于等于len、index在正常的值[0,len-1]
+
+编写时注意：
+
+1. 时刻注意“下标越界”问题
+2. 时刻注意加减节点时附带len字段的变化
+
+这道有些莫名其妙……照自己理解写能写出来，过不了样例
+
+- [ ] 以下是官方题解，我找时间看一下java的ListNode源码是怎么写的吧
+
+```java
+/**
+ * ClassName: solve3
+ * Package: PACKAGE_NAME
+ * Description:
+ *
+ * @Author YukinoshitaYukino
+ * @Create 2025/1/23 19:21
+ * @Version 1.0
+ */
+public class solve3 {
+}
+
+class MyLinkedList {
+    int size;
+    Node head;
+
+    public MyLinkedList() {
+        this.size = 0;
+        this.head = new Node(0);//头节点是虚拟的节点
+    }
+
+    public int get(int index) {
+        if (index < 0 || index >= this.size) return -1;
+        Node cur = head;
+        //有必要解释一下这里为什么要进行index次循环：
+        //这和链表的设计有关——因为这里的单链表是从head开始的
+        //而head是设定为空的头节点，不计入长度
+
+        //??不是……为什么是小于等于index？？
+        //合理解释就是……这个index的范围就是在 [0,size-1]
+        //艹（来自对官方题解吐槽）
+        for (int i = 0; i <= index; i++) {
+            cur = cur.next;
+        }
+        return cur.val;
+
+    }
+
+    public void addAtHead(int val) {
+        addAtIndex(0, val);
+    }
+
+    public void addAtTail(int val) {
+        addAtIndex(this.size, val);
+    }
+
+    public void addAtIndex(int index, int val) {
+        if (index > size) {
+            return;
+        }
+        index = Math.max(0, index);
+        size++;
+        Node pred = head;
+        for (int i = 0; i < index; i++) {
+            pred = pred.next;
+        }
+        Node toAdd = new Node(val);
+        toAdd.next = pred.next;
+        pred.next = toAdd;
+    }
+
+    public void deleteAtIndex(int index) {
+        if(index < 0 || index >= this.size) return;
+        size--;
+
+        Node cur = head;
+        for(int i=0;i<index;i++){
+            cur = cur.next;
+        }
+        cur.next = cur.next.next;
+
+    }
+}
+
+class Node {
+    int val;
+    Node next;
+
+    public Node(int val) {
+        this.val = val;
+    }
+}
+
+```
+
