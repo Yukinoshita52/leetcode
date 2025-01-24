@@ -313,3 +313,70 @@ class Node {
 
 ```
 
+## [206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/)
+
+没什么好说的，很直观的解法：
+
+<img src="./imgs/image-20250124124653702.png" alt="image-20250124124653702" style="zoom:67%;" />
+
+<img src="./imgs/image-20250124124836419.png" alt="image-20250124124836419" style="zoom:67%;" />
+
+- 一个节点反转后的状态如下，后面以此类推：
+
+<img src="./imgs/image-20250124124925902.png" alt="image-20250124124925902" style="zoom:67%;" />
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode cur = head;
+        
+        ListNode tmp;
+        while(cur != null){
+            tmp = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = tmp;
+        }
+        return prev;
+    }
+}
+```
+
+- 递归写法：
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ * int val;
+ * ListNode next;
+ * ListNode() {}
+ * ListNode(int val) { this.val = val; }
+ * ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        return reverse(null,head);
+    }
+
+    public ListNode reverse(ListNode prev, ListNode cur) {
+        if (cur == null) return prev;
+        ListNode tmp = cur.next;
+        cur.next = prev;
+        return reverse(cur,tmp);
+    }
+}
+```
+
