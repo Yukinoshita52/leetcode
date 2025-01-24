@@ -380,3 +380,53 @@ class Solution {
 }
 ```
 
+## [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+
+- 核心思路：**滑动窗口**
+
+![image-20250124131928118](./imgs/image-20250124131928118.png)
+
+![image-20250124132002492](./imgs/image-20250124132002492.png)
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        //题目意思：head不为null（1<=sz<=30）
+        int size = 0;
+        ListNode cur = head;
+        ListNode prev = null;
+        while(cur != null){
+            size++;
+            if(size == n + 1){
+                prev = head;
+                cur = cur.next;
+            }
+            else if(size > n + 1){
+                prev = prev.next;
+                cur = cur.next;
+            }
+            else{
+                cur = cur.next;
+            }
+        }
+        if(prev == null){//说明删除的是头节点
+            return head.next;
+        }else{
+            prev.next = prev.next.next;
+            return head;
+        }
+        
+    }
+}
+```
+
