@@ -430,3 +430,143 @@ class Solution {
 }
 ```
 
+## [142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)
+
+核心考点：
+
+1. 判断单链表有无环
+2. 若有环，找出环的入口节点
+
+### 思路一：利用HashMap记录已访问过的节点
+
+该思路下，每访问一个就记录，然后判断“cur.next”是否已访问过，即可得到是否有环+找出入口节点
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        HashMap<ListNode,Integer> visited = new HashMap<>();
+        ListNode cur = head;
+        while(cur != null){
+            if(visited.containsKey(cur.next)){
+                return cur.next;
+            }
+            visited.put(cur,0);
+            cur = cur.next;
+        }
+        return null;
+    }
+}
+```
+
+- 缺点：时间复杂度较高（每过一个节点就要在HashMap中匹配）
+
+### 思路二：快慢指针（Floyd判圈算法）
+
+> 本题的方法还有个更高大上的名字，[Floyd判圈算法](https://zh.wikipedia.org/wiki/Floyd%E5%88%A4%E5%9C%88%E7%AE%97%E6%B3%95#%E5%BA%94%E7%94%A8)，又称龟兔赛跑算法，是一个可以在[有限状态机](https://zh.wikipedia.org/wiki/有限状态机)、[迭代函数](https://zh.wikipedia.org/wiki/迭代函数)或者[链表](https://zh.wikipedia.org/wiki/链表)上判断是否存在[环](https://zh.wikipedia.org/wiki/環_(圖論))，求出该环的起点与长度的算法。
+
+- 形象上来看分为两个过程：
+
+  <img src="./imgs/image-20250125204733083.png" alt="image-20250125204733083" style="zoom:67%;" />
+
+  1. 快指针每次走两步，慢指针每次走一步，直到他们相遇为止（说明有环）
+
+     <img src="./imgs/image-20250125204745962.png" alt="image-20250125204745962" style="zoom:67%;" />
+
+  2. 再定义两个指针分别从head和（fast和slow的）相遇点同时出发，直到相遇。而且相遇点必定是环的入口：
+
+     <img src="./imgs/image-20250125204910130.png" alt="image-20250125204910130" style="zoom:67%;" />
+
+     <img src="./imgs/image-20250125204920545.png" alt="image-20250125204920545" style="zoom:67%;" />
+
+  问题来了——两个关键问题中的“如何判断有环”很好解决（fast和slow是否相遇），但是**为什么index1、index2再相遇的点一定是环的入口呢？**
+
+  严格推导如下：
+
+**快慢指针的基本设定**
+
+    1. 设链表由三部分组成：
+     - **起点到环入口的距离**：记为 A。
+     - **环入口到快慢指针相遇点的距离**：记为 B。
+     - **相遇点到环入口的剩余距离**：记为 C，环的总长度为 L，则 $L=B+C$
+    2. 两个指针的移动速度：
+     - **慢指针（slow）**：一次走 1 步。
+     - **快指针（fast）**：一次走 2 步。
+    3. 两指针初始位置为链表头节点，且都朝着链表的下一个节点移动。
+
+**相遇点的性质**
+
+  1. **快慢指针的相遇条件**：
+     
+     - 假设慢指针走了 x 步，则快指针走了 2x 步。
+     
+     - 快指针比慢指针多走的步数一定是环的整数倍，满足： 
+     
+     - $$
+       2x - x = n \cdot L \quad (n \geq 1)
+       $$
+     
+     - 即：
+     - $$
+       x = n \cdot L \quad (n \geq 1)	\qquad (1)
+       $$
+     
+  2. **相遇点的推导**：
+     
+     - 慢指针走了 x 步，此时 x 包含起点到环入口的距离 A，以及在环内走的距离 B，故$x = A + B \qquad (2)$
+     - 因此，由（1）式和（2）式可得：$A + B = n \cdot L \qquad (3)$
+     - （3）式可理解为：起点到环入口的距离 A，以及在环内走的距离 B之和，相当于n倍环的长度
+
+**环入口与相遇点的关系**
+
+  要证明为什么从头节点到环入口的距离 A等于从相遇点沿着环走到环入口的距离 C，可以整理公式：
+
+  1. 从（3）式，整理出：
+
+     $A = n \cdot L - B \qquad (4)$
+
+     因为环的长度是 L，在环内 $B + C = L$，所以$C = L - B \qquad (5)$
+
+     假设n是1呢？也就是快指针fast多跑了1圈，那么（4）式和（5）式联立可解得$A = C$
+
+     那么把情况考虑完全，快指针可能不止跑了一圈，那也没关系——想象一下，另设两个指针index1和index2，分别从head和相遇点出发，那么index1起码为了进入圈，要跑A的距离，也就是$n \cdot L - B$，但是index2始终在环内“绕圈圈”。对吧？所以就相当于是$A=L-B$（相当于index2在原地不动，index1在进入环前在跑掉这一圈圈的距离），最后得出的结论不变。
+
+  2. 结论：
+
+     - 从头节点到环入口的距离 A，等于从相遇点继续沿着环走到环入口的距离 C。（稍不严谨，但是上面已经解释清楚了原因）
+
+> 实在不懂的话画画图理解一下还是很好理解的：
+>
+> <img src="./imgs/89ab6f91c4ee012eeb6c68ede5102c30_720.jpg" alt="89ab6f91c4ee012eeb6c68ede5102c30_720" style="zoom: 50%;" />
+
+**算法的逻辑**
+
+  利用上述结论，算法通过以下步骤准确找到环的入口：
+
+  1. 两指针（快慢指针）第一次相遇后，将其中一个指针重置到链表头部，另一个指针留在相遇点。
+  2. 两指针以相同速度前进（一次走一步）。
+  3. 因为一个指针从头节点出发，另一个指针从相遇点出发，两者相遇时会刚好在环入口处。
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast!= null && fast.next!= null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                ListNode index1 = head;
+                ListNode index2 = fast;
+                while (index1 != index2) {
+                    index1 = index1.next;
+                    index2 = index2.next;
+                }
+                return index1;
+            }
+        }
+        return null;
+    }
+}
+```
+
+## 待续
