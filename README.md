@@ -678,3 +678,46 @@ public boolean isAnagram(String s, String t) {
 }
 ```
 
+## [349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
+
+### 利用HashSet可解
+
+唯一难点是java中容器的使用
+
+```java
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        // 使用 HashSet 存储 nums1 中的唯一元素
+        HashSet<Integer> set1 = new HashSet<>();
+        for (int num : nums1) {
+            set1.add(num);
+        }
+
+        // 用另一个 HashSet 存储交集结果
+        HashSet<Integer> intersectionSet = new HashSet<>();
+        for (int num : nums2) {
+            if (set1.contains(num)) {
+                intersectionSet.add(num);
+            }
+        }
+
+        // 将交集结果转换为数组
+        int[] resultArray = new int[intersectionSet.size()];
+        int index = 0;
+        for (int num : intersectionSet) {
+            resultArray[index++] = num;
+        }
+
+        //  // 或使用迭代器将交集结果转换为数组
+        // int[] resultArray = new int[intersectionSet.size()];
+        // Iterator<Integer> iterator = intersectionSet.iterator();
+        // int index = 0;
+        // while (iterator.hasNext()) {
+        //     resultArray[index++] = iterator.next();
+        // }
+
+        return resultArray;
+    }
+}
+```
+
