@@ -569,4 +569,112 @@ public class Solution {
 }
 ```
 
-## 待续
+# 哈希表
+
+## [242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
+
+### 思路1：利用java容器的HashMap
+
+以Character为key，Integer为value。
+
+记录前一个字符串中每一个字符对应出现次数，再遍历第二个字符串，每遍历一个字符，便在HashMap中寻找，若返回null直接false，或者找到后，对应次数-1，若小于0，也返回false。否则返回true
+
+```java
+public boolean isAnagram(String s, String t) {
+        int size = s.length();
+        if(size != t.length()) return false;
+        HashMap<Character,Integer> count = new HashMap<>();
+        for(char c :s.toCharArray()){
+            if(count.containsKey(c)){
+                count.put(c,count.get(c)+1);
+            }
+            else {
+                count.put(c, 1);
+            }
+        }
+
+        for(char c :t.toCharArray()){
+            if(count.get(c) == null) return false;
+            count.put(c,count.get(c)-1);
+        }
+        return true;
+    }
+```
+
+> 思路就是这样的思路，但是时间性能还能优化
+
+### (best)思路2：自建“哈希表”
+
+哈希表的本质是通过Hash函数，将key映射到数组中对应的存储位置上，所以不妨自己创建一个映射规则：
+
+由于本题目中，字符范围仅仅是小写字母，可以用26个大小的数组来存储，也就是在下标为`'字符'-'a'`的位置存储`'字符'`出现的个数
+
+例如：`arr[c - 'a']++`（c为char类型）
+
+**最优写法**（时间耗费最少）
+
+```java
+public boolean isAnagram(String s, String t) {
+        int size = s.length();
+        if(size != t.length()) return false;
+        int[] arr = new int[26];
+        for(char c : s.toCharArray()) arr[c - 'a']++;
+        for(char c : t.toCharArray()) arr[c - 'a']--;
+        for(int i=0;i<arr.length;i++){
+            if(arr[i] != 0) return false;
+        }
+        return true;
+    }
+```
+
+另一种写法：
+
+```java
+public boolean isAnagram(String s, String t) {
+    if (s.length() != t.length()) return false;
+
+    // 26 个字母的频次数组
+    int[] count = new int[26];
+
+    // 遍历字符串 s 和 t，更新频次
+    for (int i = 0; i < s.length(); i++) {
+        count[s.charAt(i) - 'a']++;
+        count[t.charAt(i) - 'a']--;
+    }
+
+    // 检查所有频次是否为 0
+    for (int c : count) {
+        if (c != 0) return false;
+    }
+
+    return true;
+}
+
+```
+
+
+
+分析：时间复杂度为`O(n)`，空间复杂度为`O(n)`。
+
+### 思路3：
+
+本题还可以先对两个字符串排序后再比较也行
+
+```java
+public boolean isAnagram(String s, String t) {
+        // 如果字符串长度不同，直接返回 false
+        if (s.length() != t.length()) return false;
+
+        // 将字符串转换为字符数组
+        char[] charArray = s.toCharArray();
+        char[] charArray1 = t.toCharArray();
+
+        // 排序两个字符数组
+        Arrays.sort(charArray);
+        Arrays.sort(charArray1);
+
+        // 比较排序后的字符数组是否相同
+        return Arrays.equals(charArray, charArray1);
+}
+```
+
