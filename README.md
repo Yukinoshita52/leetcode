@@ -724,7 +724,7 @@ class Solution {
 ## [1. 两数之和](https://leetcode.cn/problems/two-sum/)
 
 - 题目要求找到两个数，相加为target，返回这两个数在nums中的下标。
-- 利用HashMap可解，其中map存储的key：value为  值：下标。故每次往map集合中新加入数时，先判断是否已经有以target-nums[i]为key的元素，若有，fan'hu
+- 利用HashMap可解，其中map存储的key：value为  值：下标。故每次往map集合中新加入数时，先判断是否已经有以target-nums[i]为key的元素，若有，返回答案即可。
 
 ```java
 public class Solution {
@@ -745,3 +745,194 @@ public class Solution {
 }
 ```
 
+## [454. 四数相加 II](https://leetcode.cn/problems/4sum-ii/)
+
+显然，拿到题目，最最直观的想法——暴力法如下：
+
+```java
+class Solution {
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        int res = 0;
+        
+        //暴力法：
+        for(int i=0;i<nums1.length;i++){
+            int sum = nums1[i];
+            for(int j=0;j<nums2.length;j++){
+                sum+=nums2[j];
+                for(int k=0;k<nums3.length;k++){
+                    sum+=nums3[k];
+                    for(int l=0;l<nums4.length;l++){
+                        sum+=nums4[l];
+                        if(sum == 0){
+                            res++;
+                        }
+                        sum -= nums4[l];
+                    }
+                    sum -= nums3[k];
+                }
+                sum -=nums2[j];
+            }
+        }
+        return res;
+    }
+}
+```
+
+- 显然这也是行不通的，时间超时了
+
+稍作改进，用四个map进行存储（key：value对应 **值：出现次数**），虽然查找效率变高了，但是还是四重循环，最终还是超时
+
+```java
+public class Solution {
+
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        int res = 0;
+
+        HashMap<Integer, Integer> map1 = new HashMap<>();
+        HashMap<Integer, Integer> map2 = new HashMap<>();
+        HashMap<Integer, Integer> map3 = new HashMap<>();
+        HashMap<Integer, Integer> map4 = new HashMap<>();
+        for (int i = 0; i < nums1.length; i++) {
+            if (map1.get(nums1[i]) == null) {
+                map1.put(nums1[i], 1);
+            } else {
+                map1.put(nums1[i], map1.get(nums1[i]) + 1);
+            }
+
+            if (map2.get(nums2[i]) == null) {
+                map2.put(nums2[i], 1);
+            } else {
+                map2.put(nums2[i], map2.get(nums2[i]) + 1);
+            }
+
+            if (map3.get(nums3[i]) == null) {
+                map3.put(nums3[i], 1);
+            } else {
+                map3.put(nums3[i], map3.get(nums3[i]) + 1);
+            }
+
+            if (map4.get(nums4[i]) == null) {
+                map4.put(nums4[i], 1);
+            } else {
+                map4.put(nums4[i], map4.get(nums4[i]) + 1);
+            }
+        }
+
+        int sum;
+        Set<Map.Entry<Integer, Integer>> entries1 = map1.entrySet();
+        Set<Map.Entry<Integer, Integer>> entries2 = map2.entrySet();
+        Set<Map.Entry<Integer, Integer>> entries3 = map3.entrySet();
+        Set<Map.Entry<Integer, Integer>> entries4 = map4.entrySet();
+
+        for (Map.Entry<Integer, Integer> entry1 : entries1) {
+            sum = entry1.getKey();
+            for (Map.Entry<Integer, Integer> entry2 : entries2) {
+                sum += entry2.getKey();
+                for (Map.Entry<Integer, Integer> entry3 : entries3) {
+                    sum += entry3.getKey();
+                    for (Map.Entry<Integer, Integer> entry4 : entries4) {
+                        sum += entry4.getKey();
+                        if (sum == 0) {
+                            res += entry1.getValue() * entry2.getValue() * entry3.getValue() * entry4.getValue();
+                        }
+                        sum -= entry4.getKey();
+                    }
+                    sum -= entry3.getKey();
+                }
+                sum -= entry2.getKey();
+            }
+        }
+
+        return res;
+    }
+}
+
+```
+
+- 此处需要一点小巧思，那就是map的key和值的设计。考虑一下“两数之和”的写法，只使用了一个map解决，那个map存储的是key（nums1的数值）：value（nums1[i]的下标i）
+- 此处可修改为key（**num1[i]+nums2[j]**）：value（**出现次数**）
+- 这样一来，我们再对nums3和num4进行一个双重循环：对于每一个nums3[i]和nums4[j]，如果存在有map(-(nums3[i] + nums4[j]) )，说明原本的四个数组相加可以为0，则此时进行res+=map.getValue操作。
+- 最终返回res即可
+
+`清晰的代码思路`
+
+```java
+public class Solution {
+
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        int res = 0;
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for (int num1 : nums1) {
+            for(int num2 : nums2){
+                if(map.get(num1+num2) == null) map.put(num1+num2,1);
+                else map.put(num1+num2,map.get(num1+num2)+1);
+            }
+        }
+
+        for(int num3 : nums3){
+            for(int num4:nums4){
+                if(map.get(-(num3+num4)) != null) res+=map.get(-(num3+num4));
+            }
+        }
+        
+        return res;
+    }
+}
+
+```
+
+`优化的代码写法`
+
+- **`map.merge()`**：用来简化 `if` 逻辑，它会尝试将 键`num1 + num2`对应的值与1相加，若不存在该键则插入该键值对（num1+num2:1）。
+- **`map.getOrDefault()`**：在第二部分遍历时，使用 `map.getOrDefault()` 避免了 `null` 的检查，若没有找到匹配的值，直接返回 0。
+
+```java
+public class Solution {
+
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        int res = 0;
+
+        // 使用合适的初始容量，减少哈希表扩容的次数
+        HashMap<Integer, Integer> map = new HashMap<>(nums1.length * nums2.length);
+
+        // 将 nums1 和 nums2 的所有和存入 HashMap
+        for (int num1 : nums1) {
+            for (int num2 : nums2) {
+                // 使用 merge 方法避免 if 判断，提高可读性
+                map.merge(num1 + num2, 1, Integer::sum);
+            }
+        }
+
+        // 查找 nums3 和 nums4 的和的负数是否存在于 map 中
+        for (int num3 : nums3) {
+            for (int num4 : nums4) {
+                res += map.getOrDefault(-(num3 + num4), 0);
+            }
+        }
+
+        return res;
+    }
+}
+```
+
+> `map.merge(num1 + num2, 1, Integer::sum)` 这一行代码的作用是将 `num1 + num2` 作为键，`1` 作为值，尝试将该键值对插入到 `map` 中，或者在该键已存在的情况下，更新它的值。具体来说，`merge` 方法的三个参数含义如下：
+>
+> 1. **key** (`num1 + num2`)：我们希望在 `map` 中使用的键，这里是 `num1 + num2` 的结果。
+> 2. **value** (`1`)：要插入的值，若该键还未存在于 `map` 中，直接插入 `1`。
+> 3. **remappingFunction** (`Integer::sum`)：当 `map` 中已经存在该键时，会使用这个函数来计算新的值。`Integer::sum` 是一个方法引用，表示两个整数的求和操作，也就是将已有的值和新的 `1` 相加。
+>
+> **解释流程：**
+>
+> - **如果 `num1 + num2` 不在 `map` 中**，那么 `merge` 方法会直接将这个键 `num1 + num2` 和对应的值 `1` 插入到 `map` 中。
+> - **如果 `num1 + num2` 已经在 `map` 中**，那么 `merge` 方法会调用 `Integer::sum` 函数，将现有值与新的 `1` 相加，更新 `map` 中对应键的值。例如，如果该键的当前值是 `3`，那么更新后会变为 `3 + 1 = 4`。
+>
+> **例子：**
+>
+> 假设我们有 `nums1 = [1, 2]` 和 `nums2 = [3, 4]`，那么：
+>
+> - 第一次遍历时，`num1 = 1` 和 `num2 = 3`，`num1 + num2 = 4`，在 `map` 中没有 4，因此会插入 `(4, 1)`。
+> - 下一次，`num1 = 1` 和 `num2 = 4`，`num1 + num2 = 5`，在 `map` 中没有 5，因此会插入 `(5, 1)`。
+> - 接着，`num1 = 2` 和 `num2 = 3`，`num1 + num2 = 5`，此时 `map` 中已经有键 5，因此会将原来的值 `1` 与新的 `1` 相加，变为 `(5, 2)`。
+> - 最后，`num1 = 2` 和 `num2 = 4`，`num1 + num2 = 6`，在 `map` 中没有 6，因此会插入 `(6, 1)`。
