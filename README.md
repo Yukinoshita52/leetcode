@@ -721,3 +721,27 @@ class Solution {
 }
 ```
 
+## [1. 两数之和](https://leetcode.cn/problems/two-sum/)
+
+- 题目要求找到两个数，相加为target，返回这两个数在nums中的下标。
+- 利用HashMap可解，其中map存储的key：value为  值：下标。故每次往map集合中新加入数时，先判断是否已经有以target-nums[i]为key的元素，若有，fan'hu
+
+```java
+public class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] res = new int[2];
+
+        HashMap<Integer,Integer> map = new HashMap<>();
+        for(int i=0;i<nums.length;i++){
+            if(set.get(target-nums[i]) != null){
+                res[0] = set.get(target-nums[i]);
+                res[1] = i;
+                return res;
+            }
+            set.put(nums[i],i);
+        }
+        return null;
+    }
+}
+```
+
