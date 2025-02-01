@@ -1014,3 +1014,44 @@ public class Solution {
 
 ### 指针解法
 
+- 这种思路更简单、直观，代码实现容易，且效率更高，适合本题
+
+- 看一个图就能理解：
+
+  ​	<img src="./imgs/image-20250201145737223.png" alt="image-20250201145737223" style="zoom:80%;" />
+
+```java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (nums[i] > 0)
+                break;// 如果最小的nums[i]都大于0了，说明没有三元组了
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue;// 去重
+            int left = i + 1, right = nums.length - 1;
+            while (left < right) {
+                if (nums[i] + nums[left] + nums[right] < 0) {
+                    left++;
+                } else if (nums[i] + nums[left] + nums[right] > 0) {
+                    right--;
+                } else {
+                    res.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                    //找到一个解后，为了找下一个，同时保证解不重复，也就是nums[left]要不一样
+                    //既然nums[left]都不一样了，right必定也要换个位置（才能满足三元组）
+                    while (left < right && nums[left] == nums[left + 1])
+                        left++;
+                    while (left < right && nums[right] == nums[right - 1])
+                        right--;
+                    left++;
+                    right--;
+                }
+            }
+        }
+        return res;
+    }
+}
+```
+
