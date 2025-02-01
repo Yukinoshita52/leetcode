@@ -936,3 +936,81 @@ public class Solution {
 > - 下一次，`num1 = 1` 和 `num2 = 4`，`num1 + num2 = 5`，在 `map` 中没有 5，因此会插入 `(5, 1)`。
 > - 接着，`num1 = 2` 和 `num2 = 3`，`num1 + num2 = 5`，此时 `map` 中已经有键 5，因此会将原来的值 `1` 与新的 `1` 相加，变为 `(5, 2)`。
 > - 最后，`num1 = 2` 和 `num2 = 4`，`num1 + num2 = 6`，在 `map` 中没有 6，因此会插入 `(6, 1)`。
+
+## [15. 三数之和](https://leetcode.cn/problems/3sum/)
+
+### 哈希解法
+
+- 题目要求是三数之和为0，并且有**不得重复**这一条件。
+
+- 如果暂时不考虑**去重**，可以考虑用双重循环的i、j，`nums[i]`是第一个数，`nums[j]`是第二个数，那么就需要判断在nums中是否有第三个数`-(nums[i]+nums[j])`。可以按如下步骤：
+
+  1. 可以使用HashSet来记录。对于nums[i]固定时，j向前遍历。
+  2. 若`set.contains(-(nums[i]+nums[j]))`，则将`nums[i]、nums[j]、-(nums[i]+nums[j])`作为一个结果保存到`List<List<Integer>> res`中
+
+- 但是要考虑去重的问题，比如一个数组`nums = {-3,3,0,-3,3,0}`很明显的，按照上面方式，`{-3,3,0}`会被记录两次，所以先对nums数组进行**排序**操作，并在遍历i、j变量时加入去重判断：
+
+  1. `if(i>0 && nums[i] == nums[i-1]) continue;`该语句保证了最小的数`nums[i]`不重复。注意：不能是`if(nums[i]==nums[i+1])`，这样会使情况减少（反例:`nums={-1,-1,2}`，此时i直接跳过第一个-1到了第二个-1，j又是从i+1开始的，所以就少了）
+  2. `if(j>i+2 && nums[j]== nums[j-1] && nums[j-1]==nums[j-2]) continue;`。对于第二个数`nums[j]`的去重，只有连续三个相同时才要去重。（见代码思路）
+
+- 图解：
+
+  <img src="./imgs/image-20250201143255895.png" alt="image-20250201143255895" style="zoom:67%;" />
+
+  <img src="./imgs/image-20250201143320855.png" alt="image-20250201143320855" style="zoom:67%;" />
+
+```java
+package yu5;
+
+import java.util.*;
+
+/**
+ * ClassName: Solution
+ * Package: yu5
+ * Description:
+ *
+ * @Author YukinoshitaYukino
+ * @Create 2025/2/1 12:41
+ * @Version 1.0
+ */
+public class Solution {
+    public static void main(String[] args) {
+        int[] nums = {-2,0,1,1,2};
+        List<List<Integer>> lists = threeSum(nums);
+        for(var list : lists){
+            System.out.println(list);
+        }
+    }
+
+    public static List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+
+        for(int i=0;i<nums.length;i++){
+            if(nums[i] > 0) break;//如果最小的nums[i]都大于0了，说明没有三元组了
+            if(i >0 && nums[i] == nums[i-1]) continue;//去重
+
+            HashSet<Integer> set = new HashSet<>();
+            for(int j=i+1;j<nums.length;j++){
+                //此处的去重条件较特殊（反例：-4 …… 2 2 ）
+                if(j>i+2&& nums[j] == nums[j-1] && nums[j-1] ==nums[j-2]) continue;
+                if(set.contains(-(nums[i]+nums[j]))){
+                    List<Integer> list = new ArrayList<>();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(-(nums[i]+nums[j]));
+                    res.add(list);
+                    set.remove(-(nums[i]+nums[j]));
+                }else{
+                    set.add(nums[j]);
+                }
+            }
+        }
+        return res;
+    }
+}
+
+```
+
+### 指针解法
+
