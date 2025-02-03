@@ -1057,3 +1057,156 @@ class Solution {
 }
 ```
 
+## [18. 四数之和](https://leetcode.cn/problems/4sum/)
+
+### 哈希解法
+
+- 核心思路：四数（`nums[i]、nums[j]、nums[k]、target-(nums[i]+nums[j]+nums[k])`）之和为`target`
+- 先固定`nums[i]`和`nums[j]`，然后对于每一个k，判断set中是否contains(target-nums[i]-nums[j]-nums[k])
+  - 若contains，则remove，set中已有的这个值，然后往res中添加这个四元组
+  - 若不contains，则往set中add这个nums[k]
+- （详见代码）
+
+> 样例1：`nums =[1,-2,-5,-4,-3,3,3,5]`，`target=-11`
+>
+> 预期：`[[-5,-4,-3,1]]`
+>
+> 样例2：`nums=[-2,-1,-1,1,1,2,2]`，`target=0`
+>
+> 预期：`[[-2,-1,1,2],[-1,-1,1,1]]`
+>
+> 样例3：`nums=[1000000000,1000000000,1000000000,1000000000]`，`target=-294967296`
+>
+> 预期：`[]`
+>
+> 样例4：`nums=[-1000000000,-1000000000,1000000000,-1000000000,-1000000000]`，`target=294967296`
+>
+> 预期：`[]`
+
+- 哈希解法显然时间复杂度较高，为`O(n^3)`
+
+  <img src="./imgs/image-20250203170351373.png" alt="image-20250203170351373" style="zoom:67%;" />
+
+```java
+package yu6;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
+/**
+ * ClassName: Solution
+ * Package: yu6
+ * Description:
+ *
+ * @Author YukinoshitaYukino
+ * @Create 2025/2/3 16:12
+ * @Version 1.0
+ */
+public class Solution {
+    public static void main(String[] args) {
+        List res = fourSum(new int[]{-1000000000,-1000000000,1000000000,-1000000000,-1000000000}, 294967296);
+        System.out.println(res);
+    }
+
+    public static List<List<Integer>> fourSum(int[] nums, int target) {
+        // nums[i]、nums[j]、nums[k]、target-(nums[i]+nums[j]+nums[k])
+        List<List<Integer>> res = new ArrayList<>();
+
+        Arrays.sort(nums);// 排序后可方便解题
+        for (int i = 0; i < nums.length; i++) {
+            // 若第一个便大于target，说明不存在这种四元组
+            // 注：只有nums[i]大于等于零，且nums[i]若大于0则说明可结束循环
+            if (nums[i] >= 0 && nums[i] > target)
+                break;
+            // 去重，保证nums[i]不重复
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue;
+
+
+            for (int j = i + 1; j < nums.length; j++) {
+                // 去重，保证nums[j]不重复
+                if (j > i + 1 && nums[j] == nums[j - 1])
+                    continue;
+                HashSet<Integer> set = new HashSet<>();
+                for (int k = j + 1; k < nums.length; k++) {
+                    if (k > j + 2 && nums[k] == nums[k - 1] && nums[k - 1] == nums[k - 2])
+                        continue;
+                    long sumThree = (long) nums[i] + (long) nums[j] + (long) nums[k];
+                    long required = (long) target - sumThree;
+                    if (required < Integer.MIN_VALUE || required > Integer.MAX_VALUE) {
+                        continue;
+                    }
+                    int requiredInt = (int) required;
+                    if (set.contains(requiredInt)) {
+                        res.add(Arrays.asList(nums[i], nums[j], requiredInt, nums[k]));
+                        set.remove(requiredInt);
+                    } else {
+                        set.add(nums[k]);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+}
+
+```
+
+### 指针解法（better）
+
+- 显然更推荐这种解法：
+
+  <img src="./imgs/image-20250203171636733.png" alt="image-20250203171636733" style="zoom:80%;" />
+
+  <img src="./imgs/image-20250203171448443.png" alt="image-20250203171448443" style="zoom:67%;" />
+
+```java
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        // nums[i]、nums[j]、nums[k]、target-(nums[i]+nums[j]+nums[k])
+        List<List<Integer>> res = new ArrayList<>();
+
+        Arrays.sort(nums);// 排序后可方便解题
+        for (int i = 0; i < nums.length - 3; i++) {
+            // 若第一个便大于target，说明不存在这种四元组
+            // 注：只有nums[i]大于等于零，且nums[i]若大于0则说明可结束循环
+            if (nums[i] >= 0 && nums[i] > target)
+                break;
+            // 去重，保证nums[i]不重复
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue;
+
+
+            for (int j = i + 1; j < nums.length - 2; j++) {
+                // 去重，保证nums[j]不重复
+                if (j > i + 1 && nums[j] == nums[j - 1])
+                    continue;
+                int left = j + 1, right = nums.length - 1;
+                while (left < right) {
+                    long sum = (long) nums[i] + nums[j] + nums[left] + nums[right];
+                    if (sum > target) {
+                        right--;
+                    }else if(sum < target){
+                        left++;
+                    }else{
+                        res.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+                        while(left<right && nums[left]==nums[left+1]){//去重
+                            left++;
+                        }
+                        while(left < right && nums[right]==nums[right-1]){//去重
+                            right--;
+                        }
+                        //真正对left和right同时做移动，以找下一个四元组：
+                        left++;
+                        right--;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+}
+```
+
