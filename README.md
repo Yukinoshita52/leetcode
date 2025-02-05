@@ -1210,3 +1210,25 @@ class Solution {
 }
 ```
 
+# 字符串
+
+## [344. 反转字符串](https://leetcode.cn/problems/reverse-string/)
+
+- 两个指针，一头一尾，向中逼近，依次交换，即可反转。
+
+```java
+class Solution {
+    public void reverseString(char[] s) {
+        int i=0,j=s.length-1;
+        char temp;
+        while(i<j){
+            temp = s[i];
+            s[i]=s[j];
+            s[j]=temp;
+            i++;
+            j--;
+        }
+    }
+}
+```
+
