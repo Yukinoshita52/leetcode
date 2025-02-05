@@ -1232,3 +1232,35 @@ class Solution {
 }
 ```
 
+## [541. 反转字符串 II](https://leetcode.cn/problems/reverse-string-ii/)
+
+- 要求是对特定段的字符串进行反转，那就让指针“跳跃式”前进
+
+```java
+class Solution {
+    public String reverseStr(String s, int k) {
+        int i, j;
+        char[] charArray = s.toCharArray();
+        for (i = 0, j = k - 1; j < s.length(); i += 2 * k, j += 2 * k) {
+            for (int left = i, right = j; left < right; left++, right--) {
+                char tmp = charArray[left];
+                charArray[left] = charArray[right];
+                charArray[right] = tmp;
+            }
+        }
+        if(i < s.length()){
+            j = s.length()-1;
+            while(i<j){
+                char tmp = charArray[i];
+                charArray[i] = charArray[j];
+                charArray[j] = tmp;
+                i++;
+                j--;
+            }
+        }
+        s = new String(charArray);
+        return s;
+    }
+}
+```
+
