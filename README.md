@@ -1286,3 +1286,142 @@ class Solution {
 }
 ```
 
+## [151. 反转字符串中的单词](https://leetcode.cn/problems/reverse-words-in-a-string/)
+
+### 思路一
+
+- 思路：先把原`String s`转换为`char[] charArray`
+- 将这个charArray分解成一个个单词，以`String[] words`形式存储
+- 最后将words反向拼接起来。
+
+```java
+class Solution {
+    public String reverseWords(String s) {
+        char[] charArray = s.toCharArray();
+
+        String[] words = new String[charArray.length];
+        int index = 0;
+
+        int i = 0;
+        StringBuilder word = new StringBuilder();
+        while (i < charArray.length) {
+            if (charArray[i] == ' ' && word.isEmpty()) {//跳过所有空格
+                i++;
+            } else if (charArray[i] == ' ' && !word.isEmpty()) {//说明已存在一个单词
+                words[index++] = word.toString();
+                i++;
+                word = new StringBuilder();
+            } else {
+                word.append(charArray[i]);
+                i++;
+            }
+        }
+
+        if(!word.isEmpty()) {
+            words[index++] = word.toString();
+        }
+
+        StringBuilder strBuilder = new StringBuilder();
+        for (int j = index - 1; j > 0; j--) {
+            strBuilder.append(words[j]);
+            strBuilder.append(" ");
+        }
+        strBuilder.append(words[0]);
+
+        String res = strBuilder.toString();
+        return res;
+    }
+}
+```
+
+- 相同思路下的简洁写法（但是时间性能差一些）
+- 略有不同，直接调用库函数的trim去除前后空格+split分割，但是split分割后的words有一定问题（因为没有事先对String s的中间空格作处理）
+
+```JAVA
+class Solution {
+    public String reverseWords(String s) {
+        String[] words = s.trim().split(" ");
+
+        StringBuilder strBuilder = new StringBuilder();
+        for (int j = words.length - 1; j > 0; j--) {
+            if(words[j].equals("")){
+                continue;
+            }
+            strBuilder.append(words[j]);
+            strBuilder.append(" ");
+        }
+        strBuilder.append(words[0]);
+
+        return strBuilder.toString();
+    }
+}
+```
+
+### 思路二
+
+- 删除原字符串前后空格
+- 对字符串中间空格删除到只剩一个
+- 反转整个字符串
+- 再对每个单词分别反转
+
+> 可以实现一个函数——对指定字符串进行反转，且可以指定begin和end的index
+>
+> ps：性能略快一筹
+
+```java
+class Solution {
+    public String reverseWords(String s) {
+        char[] charArray = s.toCharArray();
+
+        //1. 处理字符串开头、中间、结尾处的空格：
+        StringBuilder sb = new StringBuilder();
+        int i=0;
+        boolean flag = false;//表示是否新加了一个单词
+        while(i<charArray.length){
+            if(charArray[i]==' ' && sb.isEmpty()){//处理开头空格
+                i++;
+                continue;
+            }else if(charArray[i]!=' '){
+                sb.append(charArray[i]);
+                flag = true;
+            }else if(charArray[i]==' ' && flag){
+                sb.append(' ');
+                flag = false;
+            }
+            i++;
+        }
+        if(sb.lastIndexOf(" ")==sb.length()-1){
+            sb.deleteCharAt(sb.length()-1);//删除最后结尾的空格
+        }
+        charArray = sb.toString().toCharArray();//此时的charArray已处理完空格
+        //处理后的charArray格式必定为：一个单词一个空格，且开头结尾无空格
+        //2. 反转字符串
+        reverseCharArray(charArray,0,charArray.length-1);
+        //3. 再反转每个单词
+        for(int begin=0;begin<charArray.length;){
+            int end = begin+1;
+            while(end<charArray.length && charArray[end]!=' '){
+                end++;
+            }
+            reverseCharArray(charArray,begin,end-1);
+            begin=end+1;
+        }
+        s = new String(charArray);
+        return s;
+    }
+    /**
+     * 反转闭区间[begin,end]内的字符
+     * @param charArray
+     * @param begin
+     * @param end
+     */
+    public void reverseCharArray(char[] charArray,int begin,int end){
+        for(int left = begin,right = end;left<right;left++,right--){
+            char temp = charArray[left];
+            charArray[left] = charArray[right];
+            charArray[right] = temp;
+        }
+    }
+}
+```
+
