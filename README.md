@@ -1425,3 +1425,90 @@ class Solution {
 }
 ```
 
+## [28. 找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/)
+
+kmp算法经典步骤：
+
+1. 求得next数组（可以是部分匹配表，也可以是部分匹配表整体减一）
+2. 基于next数组进行kmp匹配
+
+**构造next数组**
+
+- 方法为`int[] getNext(String pattern)`，传入参数为`String pattern`模式串，返回结果为`int[] next`next数组（或称部分匹配表【以下java代码实现中——next数组 == 部分匹配表】）
+
+```java
+public int[] getNext(String pattern){
+    int[] next = new int[pattern.length()];
+    next[0] = 0;
+    for(int i=1,j=0;i<pattern.length();i++){
+        while(j>0 && pattern.charAt(i)!=pattern.charAt(j)){
+            j = next[j-1];
+        }
+        if(pattern.charAt(i) == pattern.charAt(j)){
+            j++;
+        }
+        next[i] = j;
+    }
+    return next;
+}
+```
+
+**基于next数组进行kmp字符串匹配**
+
+- 方法为`int kmp(String str,String pattern)`，传入参数为`String str`原字符串、`String pattern`模式串，返回结果为匹配成功时模式串在原字符串中首次出现的位置（若无返回-1）
+
+```java
+public int kmp(String str,String pattern){
+    int[] next = getNext(pattern);
+    for(int i=0,j=0;i<str.length();i++){
+        while(j>0 && str.charAt(i) != pattern.charAt(j)){
+			j = next[j-1];
+        }
+        if(str.charAt(i) == pattern.charAt(j)){
+            j++;
+        }
+        if(j == pattern.length()){
+            return i-j+1;
+        }
+    }
+    return -1;
+}
+```
+
+### 本题解题代码
+
+```java
+class Solution {
+    public int strStr(String haystack, String needle) {
+        int[] next = getNext(needle);
+        for (int i = 0, j = 0; i < haystack.length(); i++) {
+            while (j > 0 && haystack.charAt(i) != needle.charAt(j)) {
+                j = next[j - 1];
+            }
+            if (haystack.charAt(i) == needle.charAt(j)) {
+                j++;
+            }
+            if (j == needle.length()) {
+                return i - j + 1;
+            }
+        }
+        return -1;
+    }
+
+    public int[] getNext(String str) {
+        int[] next = new int[str.length()];
+        next[0] = 0;
+        for (int i = 1, j = 0; i < next.length; i++) {
+            while (j > 0 && str.charAt(i) != str.charAt(j)) {
+                j = next[j - 1];
+            }
+            if (str.charAt(i) == str.charAt(j)) {
+                j++;
+            }
+            next[i] = j;
+        }
+        return next;
+    }
+}
+```
+
