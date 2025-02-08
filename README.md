@@ -1512,3 +1512,66 @@ class Solution {
 }
 ```
 
+# 力扣每日一题打卡
+
+**分类表**（ps：题面难度 ≠ 实际难度）
+
+- 动态规划
+
+  | 简单 | 中等                                                         | 困难 |
+  | ---- | ------------------------------------------------------------ | ---- |
+  |      | [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/) |      |
+  |      |                                                              |      |
+
+- other
+- 待加入
+- 字符串
+- 图
+- 树
+- 链表
+
+## [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
+
+```java
+class Solution {
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int[][] dp = new int[obstacleGrid.length][obstacleGrid[0].length];
+        
+        // 初始化第一列
+        if (obstacleGrid[0][0] == 0) {//为了解决某个特例……
+                dp[0][0] = 1;
+        }
+        for (int i = 1; i < obstacleGrid.length; i++) {
+            if (obstacleGrid[i][0] == 1) {
+                continue;
+            } else {
+                dp[i][0] = dp[i-1][0];
+            }
+        }
+        // 初始化第一行
+        for (int j = 1; j < obstacleGrid[0].length; j++) {
+            if (obstacleGrid[0][j] == 1) {
+                continue;
+            } else {
+                dp[0][j] = dp[0][j-1];
+            }
+        }
+
+        for (int i = 1; i < obstacleGrid.length; i++) {
+            for (int j = 1; j < obstacleGrid[i].length; j++) {
+
+                if (obstacleGrid[i][j] == 1) {
+                    continue;
+                } else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+
+            }
+        }
+        return dp[obstacleGrid.length - 1][obstacleGrid[0].length - 1];
+    }
+
+}
+```
+
