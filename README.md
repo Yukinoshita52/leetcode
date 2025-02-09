@@ -1516,19 +1516,10 @@ class Solution {
 
 **分类表**（ps：题面难度 ≠ 实际难度）
 
-- 动态规划
-
-  | 简单 | 中等                                                         | 困难 |
-  | ---- | ------------------------------------------------------------ | ---- |
-  |      | [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/) |      |
-  |      |                                                              |      |
-
-- other
-- 待加入
-- 字符串
-- 图
-- 树
-- 链表
+| 简单 | 中等                                                         | 困难 |
+| ---- | ------------------------------------------------------------ | ---- |
+|      | [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/) |      |
+|      | [80. 删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/) |      |
 
 ## [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
 
@@ -1572,6 +1563,44 @@ class Solution {
         return dp[obstacleGrid.length - 1][obstacleGrid[0].length - 1];
     }
 
+}
+```
+
+## [80. 删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/)
+
+- 思路：双指针……想到是很快，但是实际条件判断非常多，常常会出现“意外”的运行情况……然后发现按照自己的代码没有按照自己的想法在跑……或者说情况没考虑完全。
+- 说明：我这里的i始终处在一个“随时准备被覆盖”的位置上，也就是执行`nums[i] = nums[j]`语句前世满足的。
+
+```java
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        int cnt = 0;
+        int i = 0, j = 0;// i是慢指针、j是快指针
+        // 使用“滑动窗口”，j比i快
+        while (j < nums.length) {
+            int last_num = nums[j];
+            int cnt_tmp = 0;
+            // [1,1,1,2,2,3]
+            // [0,0,1,1,1,1,2,3,3]
+            // 直到找到不相同的
+            // 要重新开始cnt_tmp的计数（从0开始）
+            while (j < nums.length && nums[j] == last_num) {
+                if (cnt_tmp < 2) {
+                    nums[i] = nums[j];// 移动nums[j]的数到nums[i]上
+                    i++;
+                }
+                cnt_tmp++;
+                j++;
+            }
+            if (cnt_tmp > 2) {
+                cnt += 2;
+            } else {
+                cnt += cnt_tmp;
+            }
+
+        }
+        return cnt;
+    }
 }
 ```
 
