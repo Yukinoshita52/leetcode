@@ -1596,6 +1596,8 @@ class Solution {
 >
 > （可能可以优化吧）
 
+### 丑陋的判断条件版
+
 ```java
 class Solution {
     public boolean isValid(String s) {
@@ -1640,7 +1642,37 @@ class Solution {
 }
 ```
 
+### 优化版
 
+当“左括号需要入栈”时，可以用他对应的右括号入栈来代替，这样的好处是——当遇到右括号需要判断时，只需判断它与栈顶是否相同即可（简化了代码写法、清晰）
+
+```java
+class Solution {
+    public boolean isValid(String s) {
+        Deque<Character> stack = new ArrayDeque<>();
+        char[] charList = s.toCharArray();
+        for (int i = 0; i < charList.length; i++) {
+            // 左括号想要入栈时，我们实际存他对应的右括号
+            if (charList[i] == '(')
+                stack.offerLast(')');
+            else if (charList[i] == '[')
+                stack.offerLast(']');
+            else if (charList[i] == '{')
+                stack.offerLast('}');
+            else {
+                // 这样的话，当遇到右括号时，只需判断是否与栈顶相同即可
+                if (stack.isEmpty() || stack.getLast() != charList[i]) {
+                    return false;
+                } else {
+                    // 栈不为空 且 匹配成功的情况：
+                    stack.removeLast();
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+```
 
 # 力扣每日一题打卡
 
