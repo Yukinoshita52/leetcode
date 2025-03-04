@@ -8,7 +8,6 @@
 
 **To-Do-List**
 
-- [ ] 介绍“图解.xlsx”如何使用（我感觉刷算法题、多画画图真的是一种莫大的乐趣呀，而且非常形象——无论数组、链表、树、图等结构）
 - [x] 做了常用的**图解样例**模板
 
 # 数组
@@ -21,7 +20,7 @@
 
 自己一开始的模拟过程（以4*4为例）
 
-<img src="./imgs/image-20250122180207689.png" alt="image-20250122180207689" style="zoom:67%;" />
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637928.png" alt="image-20250122180207689" style="zoom:67%;" />
 
 对应的代码如下：
 
@@ -92,7 +91,7 @@ public class solve1 {
 
 - 一圈一圈地进行，并且都是“左闭右开”式的，特别注意n为奇数时，要补全中间的位置。这个代码实现起来更简单。
 
-  <img src="./imgs/image-20250122181138812.png" alt="image-20250122181138812" style="zoom: 80%;" />
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637929.png" alt="image-20250122181138812" style="zoom: 80%;" />
 
 ```java
 public static int[][] generateMatrix(int n) {
@@ -139,9 +138,9 @@ public static int[][] generateMatrix(int n) {
 
 图解：
 
-<img src="./imgs/image-20250123185842861.png" alt="image-20250123185842861" style="zoom:80%;" />
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637931.png" alt="image-20250123185842861" style="zoom:80%;" />
 
-<img src="./imgs/image-20250123185902223.png" alt="image-20250123185902223" style="zoom:80%;" />
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637932.png" alt="image-20250123185902223" style="zoom:80%;" />
 
 ```java
 /**
@@ -181,7 +180,7 @@ class Solution {
 
 - 也是可以做的，稍微注意一下条件判断，避免出现`NullPointerException`报错
 
-![image-20250123191033243](./imgs/image-20250123191033243.png)
+![image-20250123191033243](https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637933.png)
 
 ```java
 /**
@@ -319,13 +318,13 @@ class Node {
 
 没什么好说的，很直观的解法：
 
-<img src="./imgs/image-20250124124653702.png" alt="image-20250124124653702" style="zoom:67%;" />
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637934.png" alt="image-20250124124653702" style="zoom:67%;" />
 
-<img src="./imgs/image-20250124124836419.png" alt="image-20250124124836419" style="zoom:67%;" />
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637935.png" alt="image-20250124124836419" style="zoom:67%;" />
 
 - 一个节点反转后的状态如下，后面以此类推：
 
-<img src="./imgs/image-20250124124925902.png" alt="image-20250124124925902" style="zoom:67%;" />
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637936.png" alt="image-20250124124925902" style="zoom:67%;" />
 
 ```java
 /**
@@ -386,9 +385,9 @@ class Solution {
 
 - 核心思路：**滑动窗口**
 
-![image-20250124131928118](./imgs/image-20250124131928118.png)
+![image-20250124131928118](https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637937.png)
 
-![image-20250124132002492](./imgs/image-20250124132002492.png)
+![image-20250124132002492](https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637939.png)
 
 ```java
 /**
@@ -468,17 +467,17 @@ public class Solution {
 
 - 形象上来看分为两个过程：
 
-  <img src="./imgs/image-20250125204733083.png" alt="image-20250125204733083" style="zoom:67%;" />
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637940.png" alt="image-20250125204733083" style="zoom:67%;" />
 
   1. 快指针每次走两步，慢指针每次走一步，直到他们相遇为止（说明有环）
 
-     <img src="./imgs/image-20250125204745962.png" alt="image-20250125204745962" style="zoom:67%;" />
+     <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637941.png" alt="image-20250125204745962" style="zoom:67%;" />
 
   2. 再定义两个指针分别从head和（fast和slow的）相遇点同时出发，直到相遇。而且相遇点必定是环的入口：
 
-     <img src="./imgs/image-20250125204910130.png" alt="image-20250125204910130" style="zoom:67%;" />
+     <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637942.png" alt="image-20250125204910130" style="zoom:67%;" />
 
-     <img src="./imgs/image-20250125204920545.png" alt="image-20250125204920545" style="zoom:67%;" />
+     <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637943.png" alt="image-20250125204920545" style="zoom:67%;" />
 
   问题来了——两个关键问题中的“如何判断有环”很好解决（fast和slow是否相遇），但是**为什么index1、index2再相遇的点一定是环的入口呢？**
 
@@ -538,7 +537,7 @@ public class Solution {
 
 > 实在不懂的话画画图理解一下还是很好理解的：
 >
-> <img src="./imgs/89ab6f91c4ee012eeb6c68ede5102c30_720.jpg" alt="89ab6f91c4ee012eeb6c68ede5102c30_720" style="zoom: 50%;" />
+> <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637944.jpg" alt="89ab6f91c4ee012eeb6c68ede5102c30_720" style="zoom: 50%;" />
 
 **算法的逻辑**
 
@@ -957,9 +956,9 @@ public class Solution {
 
 - 图解：
 
-  <img src="./imgs/image-20250201143255895.png" alt="image-20250201143255895" style="zoom:67%;" />
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637945.png" alt="image-20250201143255895" style="zoom:67%;" />
 
-  <img src="./imgs/image-20250201143320855.png" alt="image-20250201143320855" style="zoom:67%;" />
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637946.png" alt="image-20250201143320855" style="zoom:67%;" />
 
 ```java
 package yu5;
@@ -1020,7 +1019,7 @@ public class Solution {
 
 - 看一个图就能理解：
 
-  ​	<img src="./imgs/image-20250201145737223.png" alt="image-20250201145737223" style="zoom:80%;" />
+  ​	<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637947.png" alt="image-20250201145737223" style="zoom:80%;" />
 
 ```java
 class Solution {
@@ -1085,7 +1084,7 @@ class Solution {
 
 - 哈希解法显然时间复杂度较高，为`O(n^3)`
 
-  <img src="./imgs/image-20250203170351373.png" alt="image-20250203170351373" style="zoom:67%;" />
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637948.png" alt="image-20250203170351373" style="zoom:67%;" />
 
 ```java
 package yu6;
@@ -1158,9 +1157,9 @@ public class Solution {
 
 - 显然更推荐这种解法：
 
-  <img src="./imgs/image-20250203171636733.png" alt="image-20250203171636733" style="zoom:80%;" />
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637949.png" alt="image-20250203171636733" style="zoom:80%;" />
 
-  <img src="./imgs/image-20250203171448443.png" alt="image-20250203171448443" style="zoom:67%;" />
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/newImages120250304122637950.png" alt="image-20250203171448443" style="zoom:67%;" />
 
 ```java
 class Solution {
@@ -1511,6 +1510,45 @@ class Solution {
     }
 }
 ```
+
+## [459. 重复的子字符串](https://leetcode.cn/problems/repeated-substring-pattern/)
+
+- 记字符串长度为`len`，`next`为其部分匹配表，如果满足`len % (len - next[len-1]) == 0`说明该字符串为重复的（当然实际条件要写成：`next[s.length()-1] == 0 ? false :s.length()% (s.length()-next[s.length()-1]) == 0`.if）
+
+> 假设整个字符串都是有重复的子字符串构成，那么构造成的next数组的最后一位的数值，一定是整个字符串s的长度 减去 “最短公共重复子串的长度”
+>
+> 举个例子：abcdefabcdefabcdef是由abcdef不断重复组成的，且重复了3次。整个字符串长度为18，“最短公共重复子串的长度”为6（abcdef长度），我们（肉眼看出）next[len-1] = 12。（对吧！），然后代入上述公式是不是就能检验呢？
+>
+> > 当然上述公式 实际判断形式要稍微细心一些（排除`next[len-1] == 0`的情况）
+
+```java
+class Solution {
+    public boolean repeatedSubstringPattern(String s) {
+        int[] next = getNext(s);
+        //如果next[s.length()-1] == 0说明没形成重复字符串
+        return next[s.length()-1] == 0 ? false :s.length()% (s.length()-next[s.length()-1]) == 0;
+    }
+
+    public int[] getNext(String s){
+        int[] next = new int[s.length()];
+        int j = 0;
+        for(int i=1;i<s.length();i++){
+            while(j>0 && s.charAt(i)!=s.charAt(j)){
+                j = next[j-1];
+            }
+            if(s.charAt(i)==s.charAt(j)){
+                j++;
+            }
+            next[i] = j;
+        }
+        return next;
+    }   
+}
+```
+
+
+
+
 
 # 力扣每日一题打卡
 
