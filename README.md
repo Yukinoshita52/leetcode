@@ -1581,6 +1581,67 @@ class Solution {
 2. 毕竟队列是先进先出，那么遇到栈的出栈操作时，我们需要取到队列的“最后一个元素”
 3. 此时就需要将前面元素全部暂存到另一个栈，等输出了最后一个元素后，再把元素存回去即可
 
+## [20. 有效的括号](https://leetcode.cn/problems/valid-parentheses/)
+
+经典的栈的应用，想清楚了很简单，我这里给出高度提炼性的总结（能悟到就觉得“括号匹配”就该用栈解决）
+
+括号匹配的特点：
+
+1. **就近匹配**（也就是判断栈顶）
+2. **成对出现**（也就是出栈条件）
+3. **完美匹配**（栈为空则？）
+4. **不能嵌套**（不能是`([)]`）
+
+> emmm思路是简单的，但是实际写代码小错误还是很多的（每次看到有新的样例错了……再加上一点条件判断，最后变成了下面一坨代码）
+>
+> （可能可以优化吧）
+
+```java
+class Solution {
+    public boolean isValid(String s) {
+        if(s!=null && (s.charAt(0) == ')' || s.charAt(0) == ']' || s.charAt(0) == '}'))
+            return false;
+
+        Deque<Character> stack = new ArrayDeque<>();
+        char[] charList = s.toCharArray();
+        for(int i=0;i<charList.length;i++){
+            if(charList[i] == '(' || charList[i] == '[' || charList[i] == '{'){
+                stack.offerLast(charList[i]);
+            }else if(!stack.isEmpty()){
+                if(charList[i] == ')'){
+                    if(stack.getLast() == '('){
+                        stack.removeLast();
+                    }else {
+                        return false;
+                    }
+                    
+                }
+                else if(charList[i] == ']'){
+                    if(stack.getLast() == '['){
+                        stack.removeLast();
+                    }else{
+                        return false;
+                    }
+                    
+                }else if(charList[i] == '}'){
+                    if(stack.getLast() == '{'){
+                        stack.removeLast();
+                    }else{
+                        return false;
+                    }
+                }
+            }else{
+                stack.offerLast(charList[i]);
+            }
+        }    
+        return stack.isEmpty();
+    }
+
+}
+```
+
+
+
 # 力扣每日一题打卡
 
 **分类表**（ps：题面难度 ≠ 实际难度）
