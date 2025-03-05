@@ -1724,6 +1724,103 @@ class Solution {
 
 
 
+## [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)
+
+- 核心思路：
+
+  1. 使用队列来模拟这个“滑动窗口”
+
+  2. 每次滑动窗口时，需要弹出一个已有元素，并加入一个新的元素
+
+     > 但是这样的想法很简单、不能满足题目需求，比如nums = [1,3,-1,-3,5,3,6,7], k = 3
+     >
+     > 初始滑动窗口为[1,3,-1]时，最大值为3（这一点可以做到）
+     >
+     > 后续开始“滑动”，当3要被弹出时，这时候更新最大值就成了问题，因为我们此时的队列中存储的k个数据与nums数组中的数据完全无异，还是要从k个元素中再次找最大值
+     >
+
+  3. 其实我们没必要维护窗口中所有元素，我们只关心最大的那个元素；在维护时，我们只需要维护**有可能成为窗口中最大值的元素**即可
+
+- 先解释一下什么叫“有可能成为窗口中最大值的元素”：
+
+  ![image-20250305161320609](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250305161429270.png)
+
+  ![image-20250305161113455](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250305161127329.png)
+
+  ![image-20250305161449054](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250305161459371.png)
+
+- 那么这是怎么做到的呢？
+
+- 需要自己设计一个队列，规则如下：
+
+  - push时，（ps：先判断dui'lie）每次新加入的值如果比 入口元素（即队尾） 大，则不断将 入口元素（即队尾） 弹出，直到小于等于入口元素，再入队。
+  -  pop时，要求队列非空 且 窗口移除的元素 等于 出口元素时，弹出出口元素（即队首），否则不进行任何操作。
+
+- 特别注意！MyQueue 类中 pop 方法里用 `==` 比较 Integer 对象，导致大数值比较出错。在 Java 中，使用 `==` 比较 Integer 时，对于范围在 [-128,127] 之外的数值可能得不到正确结果（因为它们不是同一对象），所以需要使用 `.equals()`方法进行数值比较。
+
+```java
+public void pop(Integer num){
+    //这里判断条件一定要写.equals() !!!
+    if(!queue.isEmpty() && queue.getFirst().equals(num)){
+        queue.removeFirst();
+    }
+}
+
+```
+
+`完整代码解答`
+
+```java
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int[] ans = new int[nums.length - k + 1];
+
+        MyQueue queue = new MyQueue();
+
+        for (int i = 0; i < k; i++) {
+            queue.push(nums[i]);
+        }
+        ans[0] = queue.front();
+
+        // 2. 不断向后滑动，直到最后一个元素入队
+        for (int i = k; i < nums.length; i++) {
+            queue.pop(nums[i - k]);
+            queue.push(nums[i]);
+            ans[i - k + 1] = queue.front();
+        }
+        return ans;
+    }
+}
+
+class MyQueue {
+    // 自己维护一个队列
+    // 规则：
+    // 1. push时，每次新加入的值如果比 入口元素（即队尾） 大
+    // （非空）则不断将 入口元素（即队尾） 弹出，直到小于等于，入队
+    // 2. pop时，要求队列非空 且 窗口移除的元素 等于 出口元素时，弹出出口元素（即队首）
+    Deque<Integer> queue = new ArrayDeque<>();
+
+    public void push(Integer num) {
+        while (!queue.isEmpty() && num > queue.getLast()) {
+            queue.removeLast();
+        }
+        queue.offerLast(num);
+    }
+
+    public void pop(Integer num) {
+        if (!queue.isEmpty() && queue.getFirst().equals(num)) {
+            queue.removeFirst();
+        }
+    }
+
+    public Integer front() {
+        return queue.getFirst();
+    }
+}
+```
+
+
+
 
 
 # 力扣每日一题打卡
