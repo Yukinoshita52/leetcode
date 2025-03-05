@@ -1674,6 +1674,58 @@ class Solution {
 }
 ```
 
+## [150. 逆波兰表达式求值](https://leetcode.cn/problems/evaluate-reverse-polish-notation/)
+
+经典的关于栈的运用，核心套路就这样：
+
+1. 遇到数就入栈
+2. 遇到符号就从栈中取出两个做运算
+
+```java
+class Solution {
+    public int evalRPN(String[] tokens) {
+        Deque<String> stack = new ArrayDeque<>();
+        for(String s : tokens){
+            if(s.equals("+")){
+                String[] tks = getTokens(stack);
+                Integer num2  = Integer.parseInt(tks[0]);
+                Integer num1  = Integer.parseInt(tks[1]);
+                stack.offerLast(Integer.toString(num1+num2));
+            }else if(s.equals("-")){
+                String[] tks = getTokens(stack);
+                Integer num2  = Integer.parseInt(tks[0]);
+                Integer num1  = Integer.parseInt(tks[1]);
+                stack.offerLast(Integer.toString(num1-num2));
+            }else if(s.equals("*")){
+                String[] tks = getTokens(stack);
+                Integer num2  = Integer.parseInt(tks[0]);
+                Integer num1  = Integer.parseInt(tks[1]);
+                stack.offerLast(Integer.toString(num1*num2));
+            }else if(s.equals("/")){
+                String[] tks = getTokens(stack);
+                Integer num2  = Integer.parseInt(tks[0]);
+                Integer num1  = Integer.parseInt(tks[1]);
+                stack.offerLast(Integer.toString(num1/num2));
+            }else{
+                stack.offerLast(s);
+            }
+        }
+        return Integer.parseInt(stack.removeLast());
+    }
+
+    public String[] getTokens(Deque<String> stack){
+        String[] tokens = new String[2];
+        tokens[0] = stack.removeLast();
+        tokens[1] = stack.removeLast();
+        return tokens;
+    }
+}
+```
+
+
+
+
+
 # 力扣每日一题打卡
 
 **分类表**（ps：题面难度 ≠ 实际难度）
