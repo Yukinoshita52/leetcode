@@ -1872,9 +1872,102 @@ class Solution {
 
 ```
 
+## [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 
+### 最直观——双指针法
 
+时间复杂度：$O(n^2)$
 
+采用了“以列来接雨水”思路：
+
+对于每一列，分别向左右各自寻找最高的柱子，则当前柱子能存的雨水量为`当前柱子的左边最高柱子以及右边最高柱子的较矮的柱子高度 - 当前柱子高度`，看图直观理解：
+
+- 假设有以下柱子列
+
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250306162901644.png" alt="image-20250306162845770" style="zoom:50%;" />
+
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250306163227970.png" alt="image-20250306163216844" style="zoom:50%;" />
+
+```java
+class Solution {
+    public int trap(int[] height) {
+        //确定接水的“起始点”、“终止点”（两个边缘点）
+        //算是小优化吧……
+        int start = 0;
+        while(start+1 < height.length && height[start] <= height[start+1]){
+            start++;
+        }
+        int end = height.length-1;
+        while(end-1 > 0 && height[end] <= height[end-1]){
+            end--;
+        }
+        if(start == height.length-1 || end == 0) return 0;
+
+        int rain = 0;
+        //对于每一个柱子i，用双指针寻找 它左边最高的柱子、右边最高的柱子
+        for(int i=start+1;i<end;i++){
+            int leftHeight = height[i];
+            int rightHeight = height[i];
+            for(int l = i-1;l>=start;l--){
+                if(height[l] > leftHeight) leftHeight = height[l];
+            }
+            for(int r = i+1;r<=end;r++){
+                if(height[r] > rightHeight) rightHeight = height[r];
+            }
+            rain += Integer.min(leftHeight,rightHeight) - height[i];
+        }
+        return rain;
+    }
+}
+```
+
+### 动态规划解法
+
+时间复杂度：$O(n)$
+
+- 在上述的双指针解法中，时间复杂度为$O(n^2)$的原因——对于每一个柱子，我们都要向左、向右再次找“最高柱”，导致了时间复杂度较高
+
+- 其实在求“左边最高柱”、“右边最高柱”时，存在重复计算，可以被优化：
+
+- 用两个数组maxLeft、maxRight分别记录第i号柱子的左、右最高柱信息
+
+  > maxLeft[i]表示从左数起，到第i号柱子的最高柱子高度
+  >
+  > maxRight[i]表示从右数起，到第i号柱子的最高柱子高度
+  >
+  
+
+- `maxLeft[i] = max(maxLeft[i-1],height[i]);`
+- `maxRight[i] = max(maxRight[i+1],height[i]);`
+
+```java
+class Solution {
+    public int trap(int[] height) {
+        int[] maxLeft = new int[height.length];
+        int[] maxRight = new int[height.length];
+
+        maxLeft[0] = height[0];
+        for (int i = 1; i < height.length; i++) {
+            maxLeft[i] = Integer.max(maxLeft[i - 1], height[i]);
+        }
+
+        maxRight[height.length - 1] = height[height.length - 1];
+        for (int i = height.length - 2; i >= 0; i--) {
+            maxRight[i] = Integer.max(maxRight[i + 1], height[i]);
+        }
+
+        int rain = 0;
+        // 第一格和最后一格不接水
+        for (int i = 1; i < height.length - 1; i++) {
+            rain += Integer.min(maxLeft[i], maxRight[i]) - height[i];
+        }
+
+        return rain;
+    }
+}
+```
+
+### todo:单调栈解法
 
 # 力扣每日一题打卡
 
