@@ -1819,6 +1819,59 @@ class MyQueue {
 }
 ```
 
+## [347. 前 K 个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/)
+
+1. 用HashMap记录每个值及其出现次数
+2. 用PriorityQueue，且自定义排序规则，来作为优先队列——保证出现次数少的数排在前面
+3. 若priorityQueue中元素个数大于k，则需要弹出最前元素（因为是已排序+弹出最小的）
+4. 最后输出这k个元素的key值。
+
+> `PriorityQueue<Map.Entry<Integer,Integer>> prioriyQueue = new PriorityQueue<>();`
+>
+> 注意！如果没有import java.util.Map.Entry，是不能直接写Entry类的！！（包括后续用Entry遍历Map也是一样，要写Map.Entry）
+
+```java
+import java.util.*;
+
+class Solution {
+    /**
+     * 求数组中出现频率最高的 K 个元素
+     *
+     * @param nums 给定的整数数组
+     * @param k 需要找出的高频元素个数
+     * @return 出现频率最高的 K 个元素
+     */
+    public int[] topKFrequent(int[] nums, int k) {
+        // 1. 统计每个数字的出现次数
+        Map<Integer, Integer> frequencyMap = new HashMap<>();
+        for (int num : nums) {
+            frequencyMap.put(num, frequencyMap.getOrDefault(num, 0) + 1);
+        }
+
+        // 2. 维护一个小顶堆，按出现次数排序（最小的在堆顶）
+        PriorityQueue<Map.Entry<Integer, Integer>> minHeap =
+            new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));
+
+        // 3. 遍历频率映射表，将元素加入堆中
+        for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+            minHeap.offer(entry);
+            if (minHeap.size() > k) {
+                minHeap.poll(); // 保持堆的大小为 K
+            }
+        }
+
+        // 4. 取出堆中的 K 个元素
+        int[] result = new int[k];
+        for (int i = k - 1; i >= 0; i--) {
+            result[i] = minHeap.poll().getKey();
+        }
+
+        return result;
+    }
+}
+
+```
+
 
 
 
