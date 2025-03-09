@@ -1936,7 +1936,6 @@ class Solution {
   > maxRight[i]表示从右数起，到第i号柱子的最高柱子高度
   >
   
-
 - `maxLeft[i] = max(maxLeft[i-1],height[i]);`
 - `maxRight[i] = max(maxRight[i+1],height[i]);`
 
@@ -1967,7 +1966,84 @@ class Solution {
 }
 ```
 
-### todo:单调栈解法
+### 单调栈解法
+
+思路见代码部分
+
+- 下图所用测试样例：
+
+```java
+{2,3,2,1,1,0,1,0,4,0,3}
+//预期结果
+16
+```
+
+![image-20250309123924772](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250309123935213.png)
+
+```java
+class Solution {
+    public int trap(int[] height) {
+        //思路：“横向”接
+        //计算公式为：长 × 宽，其中长为柱子高度，
+        //      长 = 具体为min(左柱子，右柱子)
+        //      宽  =当前下标 i - 栈顶的下一个元素
+        // 采用单调栈解法，其中存储的为柱子的下标。（保持单调递增【栈顶到栈底】）
+        int rain = 0;
+        MyStack stack = new MyStack(height);
+        for(int i=0;i<height.length;i++){
+            rain += stack.push(i);
+        }
+        return rain;
+    }
+}
+
+class MyStack{
+    Deque<Integer> stack = new ArrayDeque<>();
+    int[] height;
+
+    MyStack(int[] height){
+        this.height = height;
+    }
+
+    public Integer push(int i){
+        
+        if(stack.isEmpty()){
+            stack.offerLast(i);
+            return 0;
+        }
+        int rain = 0;
+        //若新入栈的柱子高度递减，则直接入栈
+        if(height[i] < height[stack.getLast()]) stack.offerLast(i);
+        else if(height[i] == height[stack.getLast()]) {
+            stack.removeLast();
+            stack.offerLast(i);
+        }else{
+            //若新加入的柱子高度高于栈顶
+            //说明出现“凹槽”
+            //执行下列步骤：
+            
+            while(!stack.isEmpty() && height[i] > height[stack.getLast()]){
+                //  1. 弹出栈顶元素(下标)
+                int mid = stack.removeLast();
+                if(!stack.isEmpty()){
+                    //  2. 若栈还不为空，则可计算这个凹槽雨水量：
+                    // (“两边高柱子”中短的柱子高度 - 低点高度) * 宽度（即:右边下标 - 左边下标 - 1）
+                    rain += (Integer.min(height[stack.getLast()] , height[i]) - height[mid]) * (i - stack.getLast()-1);
+                }
+            }
+            // 3. 最后将右边柱子入栈
+            stack.offerLast(i);
+        }
+        return rain;
+    }
+
+    public Boolean isEmpty(){
+        return stack.isEmpty();
+    }
+}
+```
+
+
 
 # 力扣每日一题打卡
 
