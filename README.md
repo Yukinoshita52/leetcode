@@ -2294,6 +2294,25 @@ class Solution {
 - 本题可以用“逐层翻转其左右子树”的思路来解题
 
 ```java
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        Deque<TreeNode> deque = new ArrayDeque<>();
+        if(root != null) deque.addLast(root);
+        while(!deque.isEmpty()){
+            int num = deque.size();
+            for(int i=0;i<num;i++){
+                TreeNode node = deque.removeFirst();
+                
+                TreeNode tmp = node.left;
+                node.left = node.right;
+                node.right = tmp;
+                if(node.left != null) deque.addLast(node.left);
+                if(node.right != null) deque.addLast(node.right);
+            }
+        }
+        return root;
+    }
+}
 ```
 
 
