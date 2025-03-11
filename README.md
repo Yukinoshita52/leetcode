@@ -2045,6 +2045,183 @@ class MyStack{
 
 
 
+# 二叉树
+
+## [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/)
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> res = new LinkedList<>();
+        preOrder(res,root);
+        return res;
+    }
+
+    public void preOrder(List<Integer> list,TreeNode node){
+        if(node == null) return;
+        list.add(node.val);
+        preOrder(list,node.left);
+        preOrder(list,node.right);
+    }
+}
+```
+
+## [94. 二叉树的中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal)
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res = new LinkedList<>();
+        inOrder(res,root);
+        return res;
+    }
+
+    public void inOrder(List<Integer> list,TreeNode node){
+        if(node == null) return;
+        inOrder(list,node.left);
+        list.add(node.val);
+        inOrder(list,node.right);
+    }
+}
+```
+
+## [145. 二叉树的后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/)
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> res = new LinkedList<>();
+        postOrder(res, root);
+        return res;
+    }
+
+    public void postOrder(List<Integer> list, TreeNode node) {
+        if (node == null)  return;
+        postOrder(list, node.left);
+        postOrder(list, node.right);
+        list.add(node.val);
+    }
+}
+```
+
+
+
+## [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
+
+- 题目思路是很简单的：看见层次遍历，立马想到用队列
+- 在遍历当前层的同时，往队列中增加下一层元素（(#`O′)……我的代码好像可以改进）
+- 下面第一版代码是我下意识想到的写法，然后出乎意料的在某处报错了，特地保留这个报错来加深这个知识点的印象
+- 改进版代码简洁许多（因为压根用不到两个方法）
+
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250311204329863.png" alt="image-20250311204319399" style="zoom:67%;" />
+
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250311204425505.png" alt="image-20250311204359920" style="zoom:67%;" />
+
+<img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250311204436611.png" alt="image-20250311204415217" style="zoom:67%;" />
+
+> 可见Java的基础知识不扎实——在这里就成了我的报错原因
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new LinkedList<>();
+        Deque<TreeNode> deque = new ArrayDeque<>();
+        if (root != null) {
+            deque.offerLast(root);// 根节点入队列
+        }
+        while (!deque.isEmpty()) {
+            bfs(res, deque);
+        }
+
+        return res;
+    }
+
+    public void bfs(List<List<Integer>> res, Deque<TreeNode> deque) {
+        List<Integer> list = new LinkedList<>();//用于存放本层遍历的数值
+        Deque<TreeNode> newDeque = new ArrayDeque<>();//用于记录下一层的node
+
+        while (!deque.isEmpty()) {
+            TreeNode node = deque.removeFirst();
+            list.add(node.val);
+            if (node.left != null)
+                newDeque.offerLast(node.left);
+            if (node.right != null)
+                newDeque.offerLast(node.right);
+        }
+        deque.addAll(newDeque);//注意这里不能写deque = newDeque!!
+        //原因是：Java中，方法的参数都是——按值传递的！
+        //虽然传递的deque是个引用数据类型，但这个参数本身（deque）是-
+        //（levelOrder中deque的）副本
+        //因此在方法bfs中即使修改了deque的指向，也只是将这个“副本”的指向更改
+        //并不会影响到外部原来deque的指向！！！
+        //因此要调用方法.addAll方法！（地址.方法-->>正确修改）
+        res.add(list);
+    }
+}
+```
+
+
+
 # 力扣每日一题打卡
 
 **分类表**（ps：题面难度 ≠ 实际难度）
