@@ -2047,6 +2047,9 @@ class MyStack{
 
 # 二叉树
 
+- 注意：二叉树的前序、中序、后续、层次遍历，都有2种形式的实现——递归、迭代
+- 换个角度思考的话，就是遍历方式有**四种**；实现形式有**两种**。
+
 ## [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/)
 
 ```java
@@ -2166,6 +2169,8 @@ class Solution {
 
 > 可见Java的基础知识不扎实——在这里就成了我的报错原因
 
+### 第一反应代码
+
 ```java
 /**
  * Definition for a binary tree node.
@@ -2218,6 +2223,77 @@ class Solution {
         res.add(list);
     }
 }
+```
+
+### 优化版
+
+```java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new LinkedList<>();
+        Deque<TreeNode> deque = new ArrayDeque<>();
+        if (root != null) {
+            deque.offerLast(root);// 根节点入队列
+        }
+        while (!deque.isEmpty()) {
+            int num = deque.size();//获取本层的元素个数
+            List<Integer> list = new LinkedList<>();//用于存放本层遍历的数值
+            while(num-- > 0){
+                TreeNode node = deque.removeFirst();
+                list.add(node.val);
+                if (node.left != null)  deque.offerLast(node.left);
+                if (node.right != null)  deque.offerLast(node.right);
+            }
+            res.add(list);//本层元素加入
+        }
+        return res;
+    }
+}
+```
+
+## [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)
+
+- 统一思路：对于每个节点，反转其左右；
+- 题虽简，其法繁
+
+> 作为一个典型例子，介绍解二叉树的题目的常见方法
+
+### 递归法
+
+- 明确自己使用的是前序、中序、后序遍历的其中一种
+
+```java
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        reverse(root);
+        return root;
+    }
+    public void reverse(TreeNode node){
+        if(node == null) return;
+        TreeNode tmp = node.left;
+        node.left = node.right;
+        node.right = tmp;
+
+        reverse(node.left);
+        reverse(node.right);
+    }
+}
+```
+
+### 迭代法
+
+- 用栈来模拟递归调用
+
+```java
+```
+
+
+
+### 层次遍历法
+
+- 本题可以用“逐层翻转其左右子树”的思路来解题
+
+```java
 ```
 
 
