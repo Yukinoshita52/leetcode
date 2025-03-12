@@ -2336,6 +2336,97 @@ class Solution {
 
 
 
+## [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)
+
+### 递归
+
+设计一个递归函数`boolean isSymmetric(TreeNode leftNode,TreeNode rightNode)`
+
+1. 确定参数、返回值——左、右节点作为参数；boolean作为返回值
+2. 确定终止条件——
+   - 左、右同时为null，返回true（对称）
+   - 左或右一个null，返回false（不对称）
+   - 左、右值不等，返回false
+   - 左、右值相等——向下判断：左节点的左与右节点的右，左节点的右与右节点的左
+
+```java
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        // 递归：
+        if (root == null)
+            return true;
+        // 若为"前序"遍历：
+        // 2 3 4（右递归）（当前节点、左子节点、右子节点）
+        // 2 3 4（左递归）（当前节点、右子节点、左子节点）
+        return isSymmetric(root.left, root.right);
+    }
+
+    public boolean isSymmetric(TreeNode leftNode, TreeNode rightNode) {
+        // 递归参数：左、右节点
+        if (leftNode == null && rightNode == null)
+            return true;
+        else if (leftNode == null || rightNode == null)
+            return false;
+        else if (leftNode.val != rightNode.val)
+            return false;
+        return isSymmetric(leftNode.left, rightNode.right)
+                && isSymmetric(leftNode.right, rightNode.left);
+    }
+}
+```
+
+### 迭代
+
+- `ArrayDeque`不允许存入null！！！
+
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250312121833254.png" alt="image-20250312121820441" style="zoom:67%;" />
+
+- 但是Deque的另一个实现类`LinkedList`可以存入任何值（include null）
+
+  <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250312121945465.png" alt="image-20250312121929857" style="zoom:80%;" />
+
+```java
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        // 迭代：
+        if (root == null)
+            return true;
+        // 若为"前序"遍历：
+        // 2 3 4（右递归）（当前节点、左子节点、右子节点）
+        // 2 3 4（左递归）（当前节点、右子节点、左子节点）
+        // Deque<TreeNode> leftStack = new ArrayDeque<>();  //ArrayDeque不允许存入null！
+        // Deque<TreeNode> rightStack = new ArrayDeque<>();
+        Deque<TreeNode> leftStack = new LinkedList<>();
+        Deque<TreeNode> rightStack = new LinkedList<>();
+        leftStack.addLast(root.left);
+        rightStack.addLast(root.right);
+
+        while (!leftStack.isEmpty() && !rightStack.isEmpty()) {
+            TreeNode leftNode = leftStack.removeLast();
+            TreeNode rightNode = rightStack.removeLast();
+            if (leftNode == null && rightNode == null)
+                continue;
+            else if (leftNode == null || rightNode == null
+                    || leftNode.val != rightNode.val) {
+                return false;
+            }
+
+            leftStack.addLast(leftNode.left);
+            leftStack.addLast(leftNode.right);
+            rightStack.addLast(rightNode.right);
+            rightStack.addLast(rightNode.left);
+            
+        }
+        return true;
+    }
+
+}
+```
+
+
+
+
+
 # 力扣每日一题打卡
 
 **分类表**（ps：题面难度 ≠ 实际难度）
