@@ -2285,6 +2285,25 @@ class Solution {
 - 用栈来模拟递归调用
 
 ```java
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        Deque<TreeNode> stack = new ArrayDeque<>();//迭代法（用栈）
+
+        if(root != null) stack.addLast(root);
+        while(!stack.isEmpty()){
+            //弹出栈顶元素
+            TreeNode node = stack.removeLast();
+            //翻转该元素的左、右子树
+            TreeNode tmp = node.left;
+            node.left = node.right;
+            node.right = tmp;
+            //将该元素的左、右子树入栈
+            if(node.left != null) stack.addLast(node.left);
+            if(node.right != null) stack.addLast(node.right);
+        }
+        return root;
+    }
+}
 ```
 
 
