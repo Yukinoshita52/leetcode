@@ -2445,6 +2445,60 @@ class Solution {
 
 
 
+## [111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
+
+### 方式Ⅰ——设置终止条件为“遇到叶子节点”
+
+```JAVA
+class Solution {
+    public int minDepth(TreeNode root) {
+        if(root == null) return 0;
+        return getMinDepth(root);
+    }
+    public int getMinDepth(TreeNode node){
+        if(node.left == null && node.right == null){//当前节点为叶子节点
+            return 1;
+        }
+        int leftDepth = Integer.MAX_VALUE;
+        int rightDepth = Integer.MAX_VALUE;
+        if(node.left != null){
+            leftDepth = minDepth(node.left);//不断向左递归，直到遇到叶子节点
+        }
+        if(node.right != null){
+            rightDepth = minDepth(node.right);//不断向右递归，直到遇到叶子节点
+        }
+        int minDe = Math.min(leftDepth, rightDepth) + 1;//选择从当前节点到叶子节点的节点个数少的作为minDe
+        return minDe;
+    }
+}
+```
+
+### 方式Ⅱ——设置终止条件为遇到null值（但是返回深度时处理注意细节）
+
+```java
+class Solution {
+    public int minDepth(TreeNode root) {
+        if(root == null) return 0;
+        int leftDepth = minDepth(root.left);	//左
+        int rightDepth = minDepth(root.right);	//右
+        										//中
+        //始终注意：“最小深度”要遇到叶子节点		
+        //若左子树为空，右子树不为空，那么计算“最小深度”，应该来自于右子树
+        if(root.left == null && root.right != null){
+            return rightDepth+1;
+        }
+        //若右子树为空，左子树不为空，那么计算“最小深度”，应该来自于左子树
+        if(root.right == null && root.left != null){
+            return leftDepth+1;
+        }
+        return Math.min(leftDepth,rightDepth)+1;
+        
+    }
+}
+```
+
+
+
 
 
 # 力扣每日一题打卡
