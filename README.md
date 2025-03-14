@@ -2423,6 +2423,26 @@ class Solution {
 }
 ```
 
+## [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)
+
+```java
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null)
+            return 0;
+        return getDepth(root);// 确保了root不为null
+    }
+
+    public int getDepth(TreeNode node) {
+        if(node == null) return 0;
+        // 1. 确定递归参数、返回值
+        // 2. 确定终止条件——遇到下一层为null值
+        // 3. 确定单层递归的逻辑——将已有的深度 与 向左、右子树的较大者相加
+        return Math.max(getDepth(node.left), getDepth(node.right)) + 1;
+    }
+}
+```
+
 
 
 
