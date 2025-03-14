@@ -2583,7 +2583,7 @@ class Solution {
     }
     public void treePaths(TreeNode root,StringBuilder path,List<String> res){
         path.append(root.val);
-        int len = path.length();//记录到达该层的路径长度（kai'shi）
+        int len = path.length();//记录到达该层的路径长度（开始前记录状态）
         
 
         //叶子节点，记录到结果集
