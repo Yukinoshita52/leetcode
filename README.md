@@ -2497,6 +2497,112 @@ class Solution {
 }
 ```
 
+## [110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)
+
+### 方式1
+
+```java
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        if(root == null) return true;
+        //左、右、中
+        //左右子树都平衡、左右子树深度之差不超过1
+        return isBalanced(root.left) && isBalanced(root.right) 
+        && Math.abs(getDepth(root.left) - getDepth(root.right))<=1;
+    }
+    public int getDepth(TreeNode node){
+        if(node == null) return 0;
+        return Math.max(getDepth(node.left),getDepth(node.right))+1;
+    }
+}
+```
+
+### 方式2（优化）
+
+```java
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        if(root == null) return true;
+        //左、右、中
+        return getDepth(root) != -1;
+    }
+    public int getDepth(TreeNode node){
+        if(node == null) return 0;
+        //返回-1则表示已经不平衡
+        int leftDepth = getDepth(node.left);
+        if(leftDepth == -1) return -1;
+        int rightDepth = getDepth(node.right);
+        if(rightDepth == -1) return -1;
+        //若左右高度之差小于1，则正常返回值（当前节点高度），否则返回-1（表示不平衡）
+        return (Math.abs(leftDepth - rightDepth) <= 1) ? Math.max(leftDepth,rightDepth)+1 : -1;
+    }
+}
+```
+
+
+
+## [257. 二叉树的所有路径](https://leetcode.cn/problems/binary-tree-paths/)
+
+### 回溯
+
+```java
+class Solution {
+    List<String> res = new ArrayList<>();
+    public List<String> binaryTreePaths(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(root.val);
+        treePaths(root,sb);
+        return res;
+    }
+    public void treePaths(TreeNode root,StringBuilder sb){
+        if(root.left == null && root.right == null){
+            res.add(sb.toString());
+        }
+        if(root.left!=null) {
+            treePaths(root.left,sb.append("->"+root.left.val));
+            int len = new String("->"+root.left.val).length();
+            sb.setLength(sb.length()-len);//回溯，删除最后添加进的字符
+        }
+        if(root.right!=null) {
+            treePaths(root.right,sb.append("->"+root.right.val));
+            int len = new String("->"+root.right.val).length();
+            sb.setLength(sb.length()-len);//回溯，删除最后添加进的字符
+        }
+    }
+}
+```
+
+### 回溯法优化
+
+```java
+class Solution {
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> res = new ArrayList<>();
+        treePaths(root,new StringBuilder(),res);
+        return res;
+    }
+    public void treePaths(TreeNode root,StringBuilder path,List<String> res){
+        path.append(root.val);
+        int len = path.length();//记录到达该层的路径长度（kai'shi）
+        
+
+        //叶子节点，记录到结果集
+        if(root.left == null && root.right == null){
+            res.add(path.toString());
+        }
+        
+        if(root.left!=null) {
+            treePaths(root.left,path.append("->"),res);
+            path.setLength(len);//回溯
+        }
+        if(root.right!=null) {
+            treePaths(root.right,path.append("->"),res);
+            path.setLength(len);//回溯
+        }
+    }
+}
+```
+
 
 
 
