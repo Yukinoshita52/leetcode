@@ -2611,10 +2611,15 @@ class Solution {
 
 **分类表**（ps：题面难度 ≠ 实际难度）
 
-| 简单 | 中等                                                         | 困难 |
-| ---- | ------------------------------------------------------------ | ---- |
-|      | [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/) |      |
-|      | [80. 删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/) |      |
+| 简单                                                         | 中等                                                         | 困难 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
+| [3110. 字符串的分数](https://leetcode.cn/problems/score-of-a-string/) | [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/) |      |
+|                                                              | [80. 删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/) |      |
+
+**暂时不会**：
+
+- [ ] [913. 猫和老鼠](https://leetcode.cn/problems/cat-and-mouse/)
+- [ ] 
 
 ## [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
 
@@ -2714,3 +2719,18 @@ class Solution {
   7. 关于剪枝：如果`mouseNext`全都在`catNext`中，则说明老鼠已经输了，不用再走下一层。
   8. 如果回到上一层，相当于“悔棋”，鼠走上一步，要走不同的走法（直到鼠能赢）
 - 可不可能出现“某些情况鼠赢、某些情况猫赢、而没有平局”呢？我感觉单纯搜索的话肯定会出现……
+
+## [3110. 字符串的分数](https://leetcode.cn/problems/score-of-a-string/)
+
+```java
+class Solution {
+    public int scoreOfString(String s) {
+        int res = 0;
+        for(int i=0;i<s.length()-1;i++){
+            res += Math.abs((int)(s.charAt(i)-s.charAt(i+1)));
+        }
+        return res;
+    }
+}
+```
+
