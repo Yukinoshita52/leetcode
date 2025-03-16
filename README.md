@@ -2603,7 +2603,40 @@ class Solution {
 }
 ```
 
+## [112. 路径总和](https://leetcode.cn/problems/path-sum/)
 
+> 再次败给**Java的参数传递方式**——**按值传递**
+>
+> 下方第14行代码向左递归时，传递的参数count只是一个数值的副本，回溯后，当前层的count不受影响！
+
+```java
+class Solution {
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+        return pathSum(root, targetSum, 0);
+    }
+
+    public boolean pathSum(TreeNode node, int targetSum, int count) {
+        count += node.val;
+        if (count == targetSum && node.left == null && node.right == null)
+            return true;
+        if (node.left != null) {
+            boolean tag = pathSum(node.left, targetSum, count);//特别注意
+            if (tag)
+                return true;
+            //无需在此加上：count -= node.left.val;
+        }
+        if (node.right != null) {
+            boolean tag = pathSum(node.right, targetSum, count);
+            if (tag)
+                return true;
+        }
+        return false;
+    }
+}
+```
 
 
 
