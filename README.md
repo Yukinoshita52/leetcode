@@ -2673,6 +2673,37 @@ class Solution {
 }
 ```
 
+## [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)
+
+- 特别注意java中的引用类型数据的特点（理解第14行新new一个对象的意义）
+
+```java
+class Solution {
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null) return res;
+        pSum(res,new ArrayList<Integer>(),root,targetSum);
+        return res;
+    }
+    public void pSum(List<List<Integer>> res,ArrayList<Integer> list,TreeNode node,int count){
+        count -= node.val;
+        list.add(node.val);
+        if(node.left == null && node.right == null && count == 0){
+            //这里必须新new一块空间
+            //不然的话，参数list始终只指向一块空间，后续对list的修改都会影响
+            ArrayList<Integer> newList = new ArrayList<Integer>();
+            newList.addAll(list);
+            res.add(newList);
+        }
+        if(node.left != null) pSum(res,list,node.left,count);
+        if(node.right != null) pSum(res,list,node.right,count);
+
+        list.remove(list.size()-1);//回溯（但是count不用回溯，是值传递的）
+
+    }
+}
+```
+
 
 
 # 力扣每日一题打卡
