@@ -2608,6 +2608,9 @@ class Solution {
 > 再次败给**Java的参数传递方式**——**按值传递**
 >
 > 下方第14行代码向左递归时，传递的参数count只是一个数值的副本，回溯后，当前层的count不受影响！
+>
+
+### 方式1
 
 ```java
 class Solution {
@@ -2632,6 +2635,38 @@ class Solution {
             boolean tag = pathSum(node.right, targetSum, count);
             if (tag)
                 return true;
+        }
+        return false;
+    }
+}
+```
+
+### 优化版写法
+
+- 可以考虑将`boolean pathSum(TreeNode node, int targetSum, int count)`
+- 修改为`boolean pathSum(TreeNode node, int count)`
+- **tips**：初始传入count = targetNum，每到一层就减去node.val，这样当`count == 0`时，说明总和为targetNum
+
+```java
+class Solution {
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+        return pathSum(root, targetSum);
+    }
+
+    public boolean pathSum(TreeNode node, int count) {
+        count -= node.val;
+        //遇到叶子节点 且 路径和为targetNum
+        if (node.left == null && node.right == null && count == 0)
+            return true;
+        if (node.left != null) {
+            //写法简化
+            if(pathSum(node.left,count)) return true;
+        }
+        if (node.right != null) {
+            if(pathSum(node.right,count)) return true;
         }
         return false;
     }
