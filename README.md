@@ -2704,6 +2704,60 @@ class Solution {
 }
 ```
 
+## [106. 从中序与后序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+
+- 思路：后序遍历的特点是，最后一个遍历的值，为这棵树的根节点的值
+
+基于这一特性，首先取出后续数组的最后一个值，作为`rootVal`，意为根节点的值，并以该值构造当前的“**根节点**”。
+
+既然目前已经知道了根节点的值，那么就要将中序遍历数组分成两部分——左中序遍历部分、右中序遍历部分，分割的方法是——在中序遍历数组中寻找值为`rootVal`的下标位置，记为`i`。
+
+- 注意：要始终确定自己设定的区间是“左闭右闭”还是“左闭右开”或是其他什么类型的，这会影响到如何为下一次递归调用传递参数。——我这里始终保持**左闭右闭**间，下面代码中的体现就是——下标为inStart、inEnd、postStart、postEnd的值都能被遍历到。
+
+找到`i`后，不难将中序数组分割为`[inStart,i-1]`和`[i+1,inEnd]`两部分
+
+之后同样将后序数组分割为左右两部分，由于中序遍历和后序遍历的是同一颗树，所以下一次的左子树和右子树分别节点个数一致，则右子树可以分割为`[postStart,postStart+长度-1]`和`[postStart+长度,postEnd-1]`两部分（注意！最后是`postEnd-1`！因为在当前层的postEnd的值已经作为根节点了！）
+
+代码上即为：`[postStart,postStart+i-1-inStart]`和`[postStart+i-inStart,postEnd-1]`
+
+最后返回当前`root`节点即可
+
+还不好理解？看图：
+
+![](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250318123948494.png)
+
+![image-20250318124606175](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250318124617155.png)
+
+![image-20250318125039860](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250318125047242.png)
+
+![image-20250318125556846](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250318125609820.png)
+
+- 大致过一遍图，再看代码就十分清晰了
+
+```java
+class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        //左闭右闭区间
+        return buildTree(inorder,0,inorder.length-1,postorder,0,postorder.length-1);
+    }
+
+    public TreeNode buildTree(int[] inorder, int inStart, int inEnd ,int[] postorder, int postStart,int postEnd) {
+        if(postStart == postEnd) return new TreeNode(postorder[postStart]);//或者写inStart == inEnd也一样
+        if(inStart > inEnd || postStart > postEnd) return null;//说明没有左或右区间可以遍历
+        int rootVal = postorder[postEnd];
+        TreeNode root = new TreeNode(rootVal);
+        int i;
+        for(i=inStart;i<=inEnd;i++){
+            if(inorder[i] == rootVal) break;
+        }
+        //找到中序数组的位置后，后续数组的区间返回可以通过长度来计算：
+        root.left = buildTree(inorder,inStart,i-1,postorder,postStart,postStart+i-1-inStart);
+        root.right = buildTree(inorder,i+1,inEnd,postorder,postStart+i-inStart,postEnd-1);
+        return root;
+    }
+}
+```
+
 
 
 # 力扣每日一题打卡
