@@ -2760,7 +2760,7 @@ class Solution {
 
 
 
-## ## [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+## [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
 
 - 顺手的事（如果做了上一题）
 
@@ -2837,6 +2837,26 @@ class Solution {
 	}
 }
 ```
+
+
+
+## [700. 二叉搜索树中的搜索](https://leetcode.cn/problems/search-in-a-binary-search-tree/)
+
+```java
+class Solution {
+    public TreeNode searchBST(TreeNode root, int val) {
+        if(root == null) return null;
+        if(root.val == val) return root;
+        TreeNode leftNode = searchBST(root.left,val);
+        if(leftNode != null) return leftNode;
+        TreeNode rightNode = searchBST(root.right,val);
+        if(rightNode != null) return rightNode;
+        return null;
+    }
+}
+```
+
+
 
 # 力扣每日一题打卡
 
