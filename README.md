@@ -2860,7 +2860,11 @@ class Solution {
 | 简单                                                         | 中等                                                         | 困难 |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
 | [3110. 字符串的分数](https://leetcode.cn/problems/score-of-a-string/) | [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/) |      |
-|                                                              | [80. 删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/) |      |
+| [2255. 统计是给定字符串前缀的字符串数目](https://leetcode.cn/problems/count-prefixes-of-a-given-string/) | [80. 删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/) |      |
+|                                                              |                                                              |      |
+|                                                              |                                                              |      |
+|                                                              |                                                              |      |
+|                                                              |                                                              |      |
 
 **暂时不会**：
 
@@ -2976,6 +2980,20 @@ class Solution {
             res += Math.abs((int)(s.charAt(i)-s.charAt(i+1)));
         }
         return res;
+    }
+}
+```
+
+## [2255. 统计是给定字符串前缀的字符串数目](https://leetcode.cn/problems/count-prefixes-of-a-given-string/)
+
+```java
+class Solution {
+    public int countPrefixes(String[] words, String s) {
+        int cnt = 0;
+        for(String word : words){
+            if(s.startsWith(word)) cnt++;
+        }
+        return cnt;
     }
 }
 ```
