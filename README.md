@@ -2927,6 +2927,24 @@ class Solution {
 
 ```
 
+## [530. 二叉搜索树的最小绝对差](https://leetcode.cn/problems/minimum-absolute-difference-in-bst/)
+
+```java
+class Solution {
+    private TreeNode prev;
+    private int minVal = Integer.MAX_VALUE;
+    public int getMinimumDifference(TreeNode root) {
+        if(root.left != null) getMinimumDifference(root.left);
+        if(prev != null) minVal = Math.min(minVal,Math.abs(root.val - prev.val));
+        prev = root;
+        if(root.right != null) getMinimumDifference(root.right);
+        return minVal;
+    }
+}
+```
+
+
+
 
 
 # 力扣每日一题打卡
