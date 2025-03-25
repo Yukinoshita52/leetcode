@@ -2853,6 +2853,82 @@ class Solution {
 }
 ```
 
+## [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)
+
+- 样例1
+
+![image-20250325140346844](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250325140412138.png)
+
+- 样例2
+
+![image-20250325140426448](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250325140435870.png)
+
+- 并不能简单的思考为“当前节点的左节点比当前节点小”、“左子树也符合条件”、“右子树也符合条件”。这样子判断是否为一棵二叉搜索树，只是满足了**局部**的性质
+- 带入上述反例很快就发现问题所在
+- 二叉搜索树真正的性质在于：**中序遍历二叉搜索树，值从小到大排序**
+
+### 错误版代码（犯了好几次错了……我佛了）
+
+```java
+class Solution {
+    public boolean isValidBST(TreeNode root) {
+        //二叉排序树有一个特点：中序遍历时，是从小到大排序的
+        if(root == null) return true;
+        return isValid(root,null);
+    }
+
+    public boolean isValid(TreeNode root,Integer lastVal){
+        //左
+        if(root.left != null) {
+            boolean tag = isValid(root.left,lastVal);
+            if(!tag) return false;
+        }
+
+        //中
+        if(lastVal != null && root.val <= lastVal) return false;
+        lastVal = root.val;
+
+        //右
+        if(root.right != null) {
+            boolean tag = isValid(root.right,lastVal);
+            if(!tag) return false;
+        }
+        return true;
+    }
+}
+```
+
+> 原因：isValid中的Integer lastVal参数是按值传参！递归回溯后不影响原来的值！
+
+### 正解
+
+```java
+class Solution {
+    private TreeNode prev = null; // 记录前一个遍历的节点
+
+    public boolean isValidBST(TreeNode root) {
+        return inOrder(root);
+    }
+
+    private boolean inOrder(TreeNode root) {
+        if (root == null) return true;
+
+        // 递归检查左子树
+        if (!inOrder(root.left)) return false;
+
+        // 访问当前节点，检查是否满足 BST 性质
+        if (prev != null && root.val <= prev.val) return false;
+        prev = root; // 更新前驱节点
+
+        // 递归检查右子树
+        return inOrder(root.right);
+    }
+}
+
+```
+
+
+
 # 力扣每日一题打卡
 
 **分类表**（ps：题面难度 ≠ 实际难度）
