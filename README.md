@@ -2,15 +2,6 @@
 
 基于《代码随想录》的刷题顺序，[项目地址](https://github.com/vltown/leetcode)
 
-[图解](./docs/图解.xlsx)
-
-[图解样例](./docs/图解样例.xlsx)
-
-**To-Do-List**
-
-- [x] 做了常用的**图解样例**模板
-- [ ] 做栈、队列、链表等`java.util.*`下的实现、调用方法的整理
-
 # 数组
 
 ## [59. 螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/)
@@ -3058,6 +3049,91 @@ class Solution {
     }
 }
 
+```
+
+
+
+## [236. 二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+### 思路1
+
+- 目前写这类二叉树的题目总算是有点感觉了——第一步应该思考的就是——“**要使用怎么样的遍历方式？**”
+  - 具体分为前序、中序、后序、层次遍历三种
+- 然后结合题目，考虑哪种遍历方式可能方便于解题（这种直觉会随着做题数量的增加而愈发准确起来）
+- 比如本题，既然是找最近公共祖先，那么要找的这个节点要尽可能深，所以我选择用**后序遍历**
+- 整体思路采用**后续遍历 + 回溯**
+- 就看看回溯上来时后“**是否已经遇到两个节点**”，来选出公共祖先
+- 思路图解：
+
+- <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250326153120891.png" alt="image-20250326153120759" style="zoom:67%;" />
+- 后续遍历的方式不再赘述
+- <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250326153349675.png" alt="image-20250326153349589" style="zoom:67%;" />
+- <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250326153629082.png" alt="image-20250326153629011" style="zoom:67%;" />
+- <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250326153946050.png" alt="image-20250326153945963" style="zoom:67%;" />
+- ![image-20250326154638289](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250326154638403.png)
+
+```java
+class Solution {
+    TreeNode ancestor;
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        commonAncestor(root,p,q);
+        return ancestor;
+    }
+
+    //整体思路采用后续遍历 + 回溯
+    //看回溯上来时后“是否已经遇到两个节点”，来选出公共祖先
+    public int commonAncestor(TreeNode root, TreeNode p, TreeNode q){
+        if(root == null) return 0;
+        int cnt = 0;
+        cnt += commonAncestor(root.left,p,q);
+        //从左子树回溯上来
+        if(cnt == 2){
+            ancestor = root;
+            cnt = 0;//清零，因为最近公共祖先只记录一次
+            return cnt;
+        }
+        cnt += commonAncestor(root.right,p,q);
+        //从右子树回溯上来
+        if(cnt == 2){
+            ancestor = root;
+            cnt = 0;//清零
+            return cnt;
+        }
+        
+        if(root == p) cnt++;
+        if(root == q) cnt++;
+        //将当前节点加入计数后，判断是否达到2个
+        if(cnt == 2){
+            ancestor = root;
+            cnt = 0;//清零
+            return cnt;
+        }
+        return cnt;
+    }
+}
+```
+
+### 思路2
+
+- 稍微修改判断逻辑、返回值类型【修改为TreeNode】
+- 但整体还是后序+回溯
+
+> 相比上述时间性能似乎差了一丝（虽然简洁了不少）
+
+- ![image-20250326155945337](https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250326155945419.png)
+
+```java
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null) return null;
+        TreeNode left = lowestCommonAncestor(root.left,p,q);
+        TreeNode right = lowestCommonAncestor(root.right,p,q);
+        if(root == p || root == q) return root;
+        if(left != null && right != null) return root;
+        if(left == null) return right;
+        return left;
+    }
+}
 ```
 
 
