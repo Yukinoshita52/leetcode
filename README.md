@@ -2943,7 +2943,122 @@ class Solution {
 }
 ```
 
+## [501. 二叉搜索树中的众数](https://leetcode.cn/problems/find-mode-in-binary-search-tree/)
 
+### 思路清晰的解答过程
+
+```java
+class Solution {
+    TreeNode prev;
+    int cnt = 1;
+    int maxCnt = 0;
+    List<Integer> list = new ArrayList<Integer>();
+
+    public int[] findMode(TreeNode root) {
+        inorder(root);
+        
+        //检查最后一次出现的结果
+        if (cnt > maxCnt) {
+            maxCnt = cnt;
+            list.clear();
+            list.add(prev.val);
+        } else if (cnt == maxCnt) {
+            list.add(prev.val);
+        }
+
+        int[] result = new int[list.size()];
+        int k = 0;
+        for (Integer i : list) {
+            result[k++] = i;
+        }
+        return result;
+    }
+
+    public void inorder(TreeNode node) {
+        if (node.left != null)
+            inorder(node.left);
+
+        // 输出node
+        if (prev != null && prev.val == node.val) {
+            cnt++;
+        } else if (prev != null && prev.val != node.val) {
+            // 若上一个节点值和当前节点值不同
+            if (cnt > maxCnt) {
+                // 若上一个节点值出现次数 大于 最高出现次数
+                maxCnt = cnt;
+                list.clear();
+                list.add(prev.val);
+            } else if (cnt == maxCnt) {
+                // 若上一个节点值出现次数 等于 最高出现次数
+                list.add(prev.val);
+            }
+            cnt = 1;// 表示当前节点的值出现次数为1
+        }
+        // 更新prev节点
+        prev = node;
+
+        if (node.right != null)
+            inorder(node.right);
+    }
+}
+```
+
+### 对上述代码的性能优化版
+
+```java
+class Solution {
+    private TreeNode prev;
+    private int cnt = 0;
+    private int maxCnt = 0;
+    private List<Integer> modes = new ArrayList<>();
+
+    public int[] findMode(TreeNode root) {
+        if (root == null) {
+            return new int[0];
+        }
+        inorder(root);
+        // 处理最后一组数据（即最右侧节点）
+        if (cnt > maxCnt) {
+            modes.clear();
+            modes.add(prev.val);
+        } else if (cnt == maxCnt) {
+            modes.add(prev.val);
+        }
+        int[] res = new int[modes.size()];
+        for (int i = 0; i < modes.size(); i++) {
+            res[i] = modes.get(i);
+        }
+        return res;
+    }
+
+    private void inorder(TreeNode node) {
+        if (node == null) {
+            return;
+        }
+        inorder(node.left);
+
+        // 当前节点与前一个节点进行比较
+        if (prev != null && prev.val == node.val) {
+            cnt++;
+        } else {
+            // 对前一个节点的计数进行判断
+            if (prev != null) {
+                if (cnt > maxCnt) {
+                    maxCnt = cnt;
+                    modes.clear();
+                    modes.add(prev.val);
+                } else if (cnt == maxCnt) {
+                    modes.add(prev.val);
+                }
+            }
+            cnt = 1; // 重置计数，新节点第一次出现
+        }
+        prev = node; // 更新前一个节点
+        inorder(node.right);
+    }
+}
+
+```
 
 
 
