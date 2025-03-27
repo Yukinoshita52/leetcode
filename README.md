@@ -3166,6 +3166,27 @@ class Solution {
 }
 ```
 
+## [701. 二叉搜索树中的插入操作](https://leetcode.cn/problems/insert-into-a-binary-search-tree/)
+
+```java
+class Solution {
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+        if(root == null) return new TreeNode(val);
+        if(val > root.val){
+            if(root.right == null) root.right = new TreeNode(val);
+            else insertIntoBST(root.right,val);
+        }
+        else{
+            if(root.left == null) root.left = new TreeNode(val);
+            else insertIntoBST(root.left,val);
+        }
+        return root;
+    }
+}
+```
+
+
+
 
 
 # 力扣每日一题打卡
