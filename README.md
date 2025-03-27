@@ -3136,6 +3136,36 @@ class Solution {
 }
 ```
 
+## [235. 二叉搜索树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/)
+
+- 思路：由于是二叉搜索树，值的大小都是有序的，所以采用前序遍历方式进行搜索即可
+
+```java
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        //保证p.val <= q.val
+        if(p.val > q.val){
+            TreeNode tmp = p;
+            p = q;
+            q = tmp;
+        }
+        return commonAncestor(root,p,q);
+    }
+    
+    //采用前序遍历顺序
+    public TreeNode commonAncestor(TreeNode root,TreeNode p,TreeNode q){
+        if(root == null) return null;
+        if(root.val < p.val){
+            return commonAncestor(root.right,p,q);
+        }
+        else if(root.val > q.val){
+            return commonAncestor(root.left,p,q);
+        }
+        else return root;
+    }
+}
+```
+
 
 
 # 力扣每日一题打卡
