@@ -3185,7 +3185,44 @@ class Solution {
 }
 ```
 
+## [450. 删除二叉搜索树中的节点](https://leetcode.cn/problems/delete-node-in-a-bst/)
 
+- 若当前节点为空，则返回null
+- 当前节点的值 等于 key
+  - 若（当前节点的）左右节点均为空，返回null
+  - 若（当前节点的）左节点为空、右节点不为空，返回右节点
+  - 若（当前节点的）左节点不为空、右节点为空，返回左节点
+  - 若（当前节点的）左右节点均不为空：找到将左子树放到右子树的最左节点的left
+- 若`root.val > key，root.left = deleteNode(root.left,key);`
+- 若`root.val < key，root.right = deleteNode(root.right,key);`
+
+> 由二叉搜索树的性质决定的
+
+```java
+class Solution {
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if(root == null) return null;
+        else if(root.val > key) root.left = deleteNode(root.left,key);
+        else if(root.val < key) root.right = deleteNode(root.right,key);
+        else{
+            if(root.left == null && root.right == null) return null;
+            else if(root.left == null && root.right != null){
+                return root.right;
+            }
+            else if(root.left != null && root.right == null){
+                return root.left;
+            }
+            else{
+                TreeNode tmp = root.right;
+                while(tmp.left != null) tmp = tmp.left;
+                tmp.left = root.left;
+                return root.right;
+            }
+        }
+        return root;
+    }
+}
+```
 
 
 
