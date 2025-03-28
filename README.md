@@ -3226,6 +3226,37 @@ class Solution {
 
 
 
+## [669. 修剪二叉搜索树](https://leetcode.cn/problems/trim-a-binary-search-tree/)
+
+**思路：**
+
+- 若当前节点为null，返回null
+- 若`root.val in [low,high]`，则分别对其左右子节点**递归更新**，并最终返回当前节点
+  - `root.left = trimBST(root.left,low,high)`
+  - `root.right = trimBST(root.right,low,high)`
+  - `return root`
+- 若`root.val < low`，**返回右递归结果**（这一步很喵）
+- 若`root.val > hig`，返回左递归结果
+- <img src="https://raw.gitmirror.com/Yukinoshita52/images/main/imgs/20250328194126042.png" alt="image-20250328194125911" style="zoom:80%;" />
+
+```java
+class Solution {
+    //总体为前序
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        if(root == null) return null;
+        else if(root.val < low) return trimBST(root.right,low,high);
+        else if(root.val > high) return trimBST(root.left,low,high);
+        root.left = trimBST(root.left,low,high);
+        root.right = trimBST(root.right,low,high);
+        return root;
+    }
+}
+```
+
+
+
+
+
 # 力扣每日一题打卡
 
 **分类表**（ps：题面难度 ≠ 实际难度）
