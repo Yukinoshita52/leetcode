@@ -3253,7 +3253,28 @@ class Solution {
 }
 ```
 
+## [108. 将有序数组转换为二叉搜索树](https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/)
 
+- 注意，这道题目是从**有序数组**构造成**平衡二叉搜索树**，跟构造AVL树不一样！
+- 构造AVL树时，用到的方法是——每新加入一个节点，就判断左子树和右子树高度差，以左子树的高度比右子树高度大于1为例，需要**左旋**，再对左子树的右子树 和 左子树的左子树进行高度判断，若**左子树的右子树的高度**比**左子树的左子树的高度**大1，则还需**对左子树的右子节点**进行一次**右旋转**——也就是所谓的**双旋转**。（整体右旋转以及他的双旋转同理）
+- 但是注意，本题已经给了条件——**有序数组**，所以上述方法就是增加不必要的复杂度，直接从数组中间开始构造根节点，递归地向左、向右构造即可！
+
+```java
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return buildBST(nums,0,nums.length-1);
+    }
+    private TreeNode buildBST(int[] nums,int left,int right){
+        if(left > right) return null;
+
+        int mid = left + (right - left) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = buildBST(nums,left,mid-1);
+        root.right = buildBST(nums,mid+1,right);
+        return root;
+    }
+}
+```
 
 
 
